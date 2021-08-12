@@ -1,0 +1,23 @@
+{
+    "name": "hdw/import-dms-plugin-boilerplate",
+    "description": "Import [Project] Products from HDW DMS",
+    "type": "wp-plugin",
+    "authors": [
+        {
+            "name": "Anthony Spross",
+            "email": "a.spross@hdw1.de"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "HDW\\ProjectDmsImporter\\": "src/"
+        },
+        "files": [
+            "inc/functions.php"
+        ]
+    },
+    "require": {
+        "horttcore/wp-plugin": "^1.0",
+        "guzzlehttp/guzzle": "^6.3"
+    }
+}

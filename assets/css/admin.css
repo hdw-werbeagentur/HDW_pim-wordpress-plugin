@@ -1,0 +1,116 @@
+.products {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1em;
+}
+
+.product {
+  font-size: 1.25em;
+}
+
+.product-input {
+  display: none !important;
+}
+
+.product-input:checked + .product-label {
+  background-color: #e5e5e5;
+}
+
+.product--has-error .product-label,
+.product--has-error .product-input + .product-label {
+  background-color: red;
+  color: white;
+}
+
+.product--is-importing .product-label,
+.product--is-importing .product-input + .product-label {
+  animation: importing 1s infinite;
+  color: white;
+}
+
+.product--is-imported .product-label,
+.product--is-imported .product-input + .product-label {
+  background-color: #9ec514;
+  color: white;
+}
+
+.product-input:checked + .product-label::after {
+  transform: scale(1);
+}
+
+.product-label {
+  border-left: .25em solid transparent;
+  display: inline-block;
+  padding: 0.5em 0.5em 0.5em 2em;
+  position: relative;
+}
+
+.product--is-in-sync .product-label {
+  border-color: #9ec514;
+}
+
+.product--is-out-of-sync .product-label {
+  border-color: #0A84FF;
+}
+
+.product--not-in-shop .product-label {
+  border-color: red;
+}
+
+.product--is-draft .product-label {
+  border-color: transparent;
+}
+
+.product-label::before,
+.product-label::after {
+  border: 2px solid currentColor;
+  content: "";
+  display: inline-block;
+  height: 1em;
+  left: 0.5em;
+  margin-right: 0.5em;
+  position: absolute;
+  top: 0.5em;
+  width: 1em;
+}
+
+.product-label::before {
+}
+
+.product-label::after {
+  align-items: center;
+  border-color: transparent;
+  content: "×";
+  display: inline-flex;
+  justify-content: center;
+  top: 0.45em;
+  transform: scale(0);
+  transition: all 0.2s;
+}
+
+.product-sku {
+  opacity: 0.2;
+}
+
+.product-progress {
+  opacity: 0;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.import-timer {
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+@keyframes importing {
+  0% {
+    background-color: #e5e5e5;
+  }
+  50% {
+    background-color: #9ec514;
+  }
+  100% {
+    background-color: #e5e5e5;
+  }
+}
