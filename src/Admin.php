@@ -155,294 +155,6 @@ class Admin
     }
 
     /**
-     * undocumented function summary
-     *
-     * Undocumented function long description
-     *
-     * @param Type $var Description
-     * @return type
-     * @throws conditon
-     **/
-    public function tabSKU()
-    {
-    ?>
-        <h2><?php _e('Artikelnummern') ?></h2>
-
-        <?php
-        if (wp_verify_nonce($_POST['waldlaeufer-logisoft-sku-nonce'], 'waldlaeufer-logisoft-sku')) {
-            $products = get_posts([
-                'post_type' => ['product', 'product_variation'],
-                'meta_key' => '_sku',
-                'post_status' => 'any',
-                'showposts' => -1,
-            ]); ?>
-            <table class="wp-list-table widefat fixed striped posts">
-                <thead>
-                    <th><?php _e('#') ?></th>
-                    <th><?php _e('Produkt', 'hdw-dms-importer') ?></th>
-                    <th><?php _e('Artikelnummer vorher', 'hdw-dms-importer') ?></th>
-                    <th><?php _e('Artikelnummer nachher', 'hdw-dms-importer') ?></th>
-                </thead>
-                <tbody>
-                    <?php
-                    $i = 1;
-                    foreach ($products as $product) {
-                        $sku = get_post_meta($product->ID, '_sku', true);
-                        $skuUpdate = \transformSKU($sku);
-                        if ($sku == $skuUpdate) {
-                            continue;
-                        } ?>
-                        <tr>
-                            <td><?= $i ?></td>
-                            <th><?= $product->post_title ?></th>
-                            <td><?= $sku ?></td>
-                            <td><?= $skuUpdate ?></td>
-                        </tr>
-                    <?php
-                        if (isset($_POST['update-sku'])) {
-                            $sku = update_post_meta($product->ID, '_sku', $skuUpdate);
-                        }
-                        $i++;
-                    } ?>
-                </tbody>
-            </table>
-        <?php
-        }
-
-        if (empty($_POST)) {
-        ?>
-            <form method="post" action="">
-                <p>
-                    <label><input type="checkbox" name="update-sku"> <?php _e('Artikelnummern korrigieren', 'hdw-dms-importer') ?></label>
-                </p>
-                <p>
-                    <button class="button button-primary" type="submit"><?php _e('Artikelnummern prüfen', 'hdw-dms-importer') ?></button>
-                </p>
-                <?php wp_nonce_field('waldlaeufer-logisoft-sku', 'waldlaeufer-logisoft-sku-nonce') ?>
-            </form>
-            <?php
-        }
-    }
-
-    /**
-     * undocumented function summary
-     *
-     * Undocumented function long description
-     *
-     * @param Type $var Description
-     * @return type
-     * @throws conditon
-     **/
-    public function tabVariations()
-    {
-        global $wpdb;
-
-        if ($_REQUEST['action'] == 'delete-variation' && isset($_REQUEST['variation']) && wp_verify_nonce($_REQUEST['nonce'], 'delete-variation-' . $_REQUEST['variation'])) {
-            $variation = wp_delete_post($_REQUEST['variation']);
-            if (is_a($variation, \WP_POST::class)) {
-            ?>
-                <div class="notice notice-success">
-                    <p><?php printf(__('Variation %s gelöscht'), $variation->post_title) ?></p>
-                </div>
-            <?php
-            } else {
-            ?>
-                <div class="error">
-                    <p><?php _e('Variation konnte nicht gelöscht') ?></p>
-                </div>
-                <?php
-            }
-        }
-
-        if (!empty($_POST) && wp_verify_nonce($_POST['nonce'], 'bulk-action') && $_POST['action'] == 'delete-selected') {
-            foreach ($_POST['post'] as $post) {
-                $variation = wp_delete_post($post);
-                if (is_a($variation, \WP_POST::class)) {
-                ?>
-                    <div class="notice notice-success">
-                        <p><?php printf(__('Variation %s gelöscht'), $variation->post_title) ?></p>
-                    </div>
-                <?php
-                } else {
-                ?>
-                    <div class="error">
-                        <p><?php _e('Variation konnte nicht gelöscht') ?></p>
-                    </div>
-        <?php
-                }
-            }
-        }
-
-
-        $treshhold = 20;
-        $i = 0;
-        $posts = get_posts([
-            'post_type' => 'product',
-            'tax_query' => [
-                [
-                    'taxonomy' => 'product_cat',
-                    'terms' => ['shop'],
-                    'field' => 'slug'
-                ]
-            ],
-            'showposts' => -1,
-        ]); ?>
-        <h2><?php _e('Variations', 'woocommerce') ?></h2>
-
-        <form method="post" action="tools.php?page=logisoft-importer&tab=variations">
-            <?php wp_nonce_field('bulk-action', 'nonce') ?>
-            <p>
-                <button name="action" value="<?php _e('delete-selected') ?>" type="submit" class="button"><?php _e('Ausgewählte Produkte löschen') ?></button>
-            </p>
-            <table class="wp-list-table widefat striped posts">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox"></th>
-                        <td>#</td>
-                        <th><?php _e('ID') ?></th>
-                        <th><?php _e('Title') ?></th>
-                        <th><?php _e('SKU', 'woocommerce') ?></th>
-                        <th><?php _e('Orders', 'woocommerce') ?></th>
-                    </tr>
-                </thead>
-                <?php
-                foreach ($posts as $post) {
-                    $variations = get_posts([
-                        'post_type' => 'product_variation',
-                        'post_parent' => $post->ID,
-                        'showposts' => -1,
-                        'orderby' => 'title',
-                        'order' => 'ASC',
-                    ]);
-                    $count = count($variations);
-                    $variationTitles = wp_list_pluck($variations, 'post_title');
-                    $unique = array_unique($variationTitles);
-                    $duplicates = array_diff_assoc($variationTitles, $unique);
-
-                    if (count($duplicates) == 0) {
-                        continue;
-                    }
-
-                    $j = 0;
-                    $i++ ?>
-                    <tbody>
-                        <tr>
-                            <th></th>
-                            <th><strong><?= $i ?></strong></th>
-                            <th><strong><?= $post->ID ?></strong></th>
-                            <th><strong><a href="<?= get_permalink($post->ID) ?>"><?= $post->post_title ?></a></strong></th>
-                            <th colspan="3"><strong><?= get_post_meta($post->ID, '_sku', true) ?></strong></th>
-                        </tr>
-                        <?php
-                        foreach ($variations as $variation) {
-                            $sql = $wpdb->prepare("SELECT * FROM dbwl2_woocommerce_order_itemmeta WHERE meta_key='_variation_id' and meta_value = %d ", $variation->ID);
-                            $orders = $wpdb->get_results($sql);
-                            if (count($orders) == 0) {
-                                // continue;
-                            }
-                            $j++; ?>
-                            <tr>
-                                <th><input value="<?= $variation->ID ?>" id="post-<?= $variation->ID ?>" name="post[]" type="checkbox"></th>
-                                <td><?= $i . '.' . $j ?></td>
-                                <td><?= $variation->ID ?></td>
-                                <td>
-                                    <label for="post-<?= $variation->ID ?>">
-                                        <?= str_replace($post->post_title . ' - ', '', $variation->post_title) ?>
-                                    </label>
-                                </td>
-                                <td>
-                                    <label for="post-<?= $variation->ID ?>">
-                                        <?= get_post_meta($variation->ID, '_sku', true) ?>
-                                    </label>
-                                </td>
-                                <td><?= count($orders) > 0 ? count($orders) : '' ?></td>
-                            </tr>
-                        <?php
-                        } ?>
-                    </tbody>
-                <?php
-                } ?>
-            </table>
-        </form>
-    <?php
-    }
-
-
-    /**
-     * Tab: Import
-     *
-     * @return void
-     **/
-    protected function tabStock(): void
-    {
-    ?>
-        <h2><?php _e('Lagerbestand') ?></h2>
-
-        <?php
-        if (wp_verify_nonce($_POST['waldlaeufer-logisoft-stock-nonce'], 'waldlaeufer-logisoft-stock')) {
-        ?>
-            <table class="wp-list-table widefat fixed striped posts">
-                <thead>
-                    <th><?php _e('#') ?></th>
-                    <th><?php _e('Title') ?></th>
-                    <th><?php _e('ID') ?></th>
-                    <th><?php _e('Count') ?></th>
-                    <th><?php _e('Status') ?></th>
-                </thead>
-                <tbody>
-                    <?php
-                    $i = 1;
-                    $originProducts = getDmsProducts();
-                    foreach ($originProducts->get() as $originProduct) {
-                        $products = \getProductsBySKU($originProduct->getSku());
-                        updateProductStockSKU($originProduct->getSku(), $originProduct->getStockSum());
-                        foreach ($products as $product) {
-                    ?>
-                            <tr>
-                                <th><?= $i ?></th>
-                                <th><?= edit_post_link($product->post_title, '', '', $product) ?></th>
-                                <td><?= $originProduct->getId() ?></td>
-                                <td><?= $originProduct->getStockSum() ?></td>
-                                <td><?= $originProduct->getStockStatus() ?></td>
-                            </tr>
-                            <?php
-                            foreach ($originProduct->getSizeDetails() as $size) {
-                                $productSizes = \getProductsBySKU($size->id);
-                                foreach ($productSizes as $product) {
-                                    updateProductStockSKU($size->id, $size->qty); ?>
-                                    <tr>
-                                        <th><?= $i ?></th>
-                                        <th><?= $product->post_title ?></th>
-                                        <td><?= $size->id ?></td>
-                                        <td><?= $size->qty ?></td>
-                                        <td><?= $size->qty > 0 ? 'instock' : 'outofstock' ?></td>
-                                    </tr>
-                    <?php
-                                    $i++;
-                                }
-                            }
-                            $i++;
-                        }
-                    } ?>
-                </tbody>
-            </table>
-        <?php
-        }
-
-        if (empty($_POST)) {
-        ?>
-            <form method="post" action="">
-                <p>
-                    <button class="button button-primary" type="submit"><?php _e('Lagerbestand aktualisieren', 'hdw-dms-importer') ?></button>
-                </p>
-                <?php wp_nonce_field('waldlaeufer-logisoft-stock', 'waldlaeufer-logisoft-stock-nonce') ?>
-            </form>
-        <?php
-        }
-    }
-
-
-    /**
      * Tab: Import
      *
      * @return void
@@ -455,7 +167,8 @@ class Admin
         <?php
         if (wp_verify_nonce($_POST['preview-waldlaeufer-logisoft-import-nonce'], 'preview-waldlaeufer-logisoft-import')) {
             $this->previewImport();
-        } ?>
+        } 
+        ?>
 
         <?php if (empty($_POST)) {
         ?>
@@ -478,6 +191,11 @@ class Admin
     protected function tabSettings(): void
     {
         if (!empty($_POST) && \wp_verify_nonce($_POST['hdw-dms-importer-settings-nonce'], 'save-hdw-dms-importer-settings')) {
+            // delete transients if language have changed
+            if(\getDmsSelectedLanguage() != sanitize_text_field($_POST['rest-products-language'])) {
+                delete_transient('logisoft-products-collection');
+            }
+            
             $options = [
                 'rest-username' => $_POST['rest-username'],
                 'rest-password' => $_POST['rest-password'] && \str_repeat('*', 8) != $_POST['rest-password'] ? $_POST['rest-password'] : getDmsRestPassword(),
@@ -485,6 +203,8 @@ class Admin
                 'rest-api-token' => sanitize_text_field($_POST['rest-api-token']),
                 'rest-products-endpoint' => sanitize_text_field($_POST['rest-products-endpoint']),
                 'rest-product-endpoint' => sanitize_text_field($_POST['rest-product-endpoint']),
+                'rest-products-language' => sanitize_text_field($_POST['rest-products-language']),
+                'rest-languages-endpoint' => sanitize_text_field($_POST['rest-languages-endpoint']),
                 // 'rest-product-stock-endpoint' => sanitize_text_field($_POST['rest-product-stock-endpoint']),
                 // 'rest-product-stock-correction-endpoint' => sanitize_text_field($_POST['rest-product-stock-correction-endpoint']),
             ];
@@ -539,6 +259,37 @@ class Admin
                         <small><?php _e('{id} is replaced with the product id from erp') ?></small>
                     </td>
                 </tr>
+                <tr>
+                    <th><?php _e('Languages Endpoint', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <?= getDMSRestBase() ?><input type="text" name="rest-languages-endpoint" value="<?= esc_attr($options['rest-languages-endpoint']) ?>" /><br>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Product Language', 'hdw-dms-importer') . '<br>';
+
+                        $contentLanguages = \getDmsLanguages();
+                        $languagesCount = $contentLanguages->getCount(); ?>
+                        (<?= $languagesCount . ' ' . __('languages', 'hdw-dms-importer'); ?>)
+                    </th>
+                    <td>
+                        <?php
+                        if($contentLanguages) { ?>
+                            <select name="rest-products-language" id="rest-product-language">
+                                <option name='select' <?php if(esc_attr($options['rest-products-language']) == 'select') echo 'selected'; ?>><?= __('Select language', 'hdw-dms-importer') ?></option>
+
+                                <?php foreach ($contentLanguages->get() as $language) { ?>
+                                    <option value="<?= $language->getIso() ; ?>"
+                                        <?php if(esc_attr($options['rest-products-language']) == $language->getIso()) echo 'selected' ?>
+                                    >
+                                    <?=  $language->getName(); ?></option>';
+                                <?php } ?>
+                            </select>
+                        <?php
+                        }
+                        ?>
+                    </td>
+                </tr>
                 <!-- <tr>
                     <th><?php _e('Product Stock Endpoint', 'hdw-dms-importer') ?></th>
                     <td>
@@ -572,7 +323,7 @@ class Admin
         // \Anni\Info('Produkt Import', 'Erstelle Vorschau von Logisoft Produkten', [
         //     'count' => $products->getCount(),
         // ]); 
-        ?>
+    ?>
         <div class="import-timer" id="import-timer">00:00</div>
         <progress id="product-progress" class="product-progress" value="0" max="<?= $products->getCount() ?>">0</progress>
         <table class="form-table">
@@ -609,37 +360,30 @@ class Admin
                                 ]
                             ];
 
-                            $postProducts = \getProductsBySKU($product->getSku(), $args);
+                            // $postProducts = \getProductsBySKU($product->getSku(), $args);
 
-                            if (!empty($postProducts)) {
-                                $classes[] = 'product--in-shop';
-                            } else {
-                                $args['post_status'] = 'draft';
-                                $postDraftProduct = \getProductsBySKU($product->getSku(), $args);
-                                $classes[] = (!empty($postDraftProduct)) ? 'product--is-draft' : '';
-                            }
+                            // if (!empty($postProducts)) {
+                            //     $classes[] = 'product--in-shop';
+                            // } else {
+                            //     $args['post_status'] = 'draft';
+                            //     $postDraftProduct = \getProductsBySKU($product->getSku(), $args);
+                            //     $classes[] = (!empty($postDraftProduct)) ? 'product--is-draft' : '';
+                            // }
 
                             $class = 'product--is-out-of-sync';
-                            $hash = $product->getHash();
-                            foreach ($postProducts as $postProduct) {
-                                if ($hash == get_post_meta($postProduct->ID, '_import-hash', true)) {
-                                    $class = 'product--is-in-sync';
-                                }
-                            }
-                            $classes[] = $class; ?>
+                            // $hash = $product->getHash();
+                            // foreach ($postProducts as $postProduct) {
+                            //     if ($hash == get_post_meta($postProduct->ID, '_import-hash', true)) {
+                            //         $class = 'product--is-in-sync';
+                            //     }
+                            // }
+                            $classes[] = $class;
+                        ?>
                             <div class="<?= implode(' ', $classes) ?>">
                                 <input checked type="checkbox" class="product-input" name="product" id="product-<?= $product->getId() ?>" value="<?= $product->getId() ?>" checked />
                                 <label class="product-label" for="product-<?= $product->getId() ?>">
-                                    <?= $product->getModel() ?><br>
-                                    <?php
-                                    $colorIndex = 0;
-                                    foreach ($product->getColors() as $color) {
-                                        $product->setColor($colorIndex); ?>
-                                        <small class="product-sku"><?= $product->getSku() ?> - <?= $product->getMaterialColorName() ?></small><br>
-                                    <?php
-                                        $colorIndex++;
-                                    } ?>
-
+                                    <?= $product->getName() ?><br>
+                                    <small class="product-sku"><?= $product->getOrderNumber() ?> (<?= $product->getStatus() ?>)</small><br>
                                 </label>
                             </div>
                         <?php

@@ -50,10 +50,12 @@ class DmsApi implements ErpApiContract
 
     /**
      * Get products
+     * 
+     * @param string $language ERP language slug
      *
      * @return array
      **/
-    public function getProducts(): array
+    public function getProducts(string $language): array
     {
         $client = new \GuzzleHttp\Client();
         $collection = [];
@@ -64,7 +66,7 @@ class DmsApi implements ErpApiContract
 
         $res = $client->request(
             'GET',
-            getDmsProductsEndpoint(), 
+            getDmsProductsEndpoint($language), 
             [
                 'headers' => $headers
             ]
@@ -105,56 +107,33 @@ class DmsApi implements ErpApiContract
     }
 
     /**
-     * Get products
+     * Get languages
      *
-     * @param string $id ERP product id
-     *
-     * @return DmsProduct
+     * @return array
      **/
-    public function getProductStock(string $id): array
+    public function getLanguages(): array
     {
         $client = new \GuzzleHttp\Client();
+        $collection = [];
+        $headers = [
+            'Authorization' => 'Bearer ' . getDMSApiToken(),
+            'Accept'        => 'application/json',
+        ];
+
         $res = $client->request(
             'GET',
-            getDmsProductStockEndpoint($id),
+            getDmsLanguagesEndpoint(),
             [
-                'auth' => [getDmsRestUser(), getDmsRestPassword()]
+                'headers' => $headers
             ]
         );
 
         if (200 != $res->getStatusCode()) {
-            return [];
+            return $collection;
         }
 
-        return json_decode($res->getBody()->getContents())->response;
-    }
+        $collection = json_decode($res->getBody()->getContents());
 
-    /**
-     * Update stock
-     **/
-    public function correctStock(array $items): bool
-    {
-        $response = wp_remote_post(
-            getDmsProductStockCorrectionEndpoint(),
-            [
-                'headers' => [
-                    'Authorization' => 'Basic ' . base64_encode(getDmsRestUser() . ':' . getDmsRestPassword()),
-                    'Content-Type' => 'application/json',
-                ],
-                'body' => json_encode(
-                    [
-                        'items' => $items
-                    ]
-                ),
-            ]
-        );
-
-        if (200 != \wp_remote_retrieve_response_code($response)) {
-            return false;
-        }
-
-        $body = json_decode(\wp_remote_retrieve_body($response));
-
-        return true;
+        return $collection;
     }
 }

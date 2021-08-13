@@ -45,9 +45,9 @@ class Import
         if (empty($postIds)) {
             // \Anni\Error(
             //     'Produkt Import',
-            //     sprintf('Produkt import fehlgeschlagen %s (%s) importiert', $product->getModel(), $product->getSku()),
+            //     sprintf('Produkt import fehlgeschlagen %s (%s) importiert', $product->getName(), $product->getSku()),
             //     [
-            //         'product' => $product->getModel(),
+            //         'product' => $product->getName(),
             //         'sku' => $product->getSku(),
             //     ]
             // );
@@ -101,14 +101,14 @@ class Import
         ]);
 
         if ($searchResult) {
-            // \Anni\Info('Produkt Import', sprintf('Aktualisiere Produkt %s (%s)', $product->getModel(), $product->getSku()), [
+            // \Anni\Info('Produkt Import', sprintf('Aktualisiere Produkt %s (%s)', $product->getName(), $product->getSku()), [
             //     'id' => $searchResult,
-            //     'name' => $product->getModel(),
+            //     'name' => $product->getName(),
             //     'sku' => $product->getSku(),
             // ]);
         } else {
-            // \Anni\Info('Produkt Import', sprintf('Erstelle neues Produkt für %s (%s)', $product->getModel(), $product->getSku()), [
-            //     'name' => $product->getModel(),
+            // \Anni\Info('Produkt Import', sprintf('Erstelle neues Produkt für %s (%s)', $product->getName(), $product->getSku()), [
+            //     'name' => $product->getName(),
             //     'sku' => $product->getSku(),
             // ]);
         }
@@ -147,8 +147,8 @@ class Import
     {
         $skipUpdate = Import::getProductByHash($product);
         if ($skipUpdate && 1 == 2) {
-            // \Anni\Info('Produkt Import', sprintf('Überspringe Produkt %s (%s)', $product->getModel(), $product->getSku()), [
-            //     'name' => $product->getModel(),
+            // \Anni\Info('Produkt Import', sprintf('Überspringe Produkt %s (%s)', $product->getName(), $product->getSku()), [
+            //     'name' => $product->getName(),
             //     'sku' => $product->getSku(),
             // ]);
             wp_update_post([
@@ -166,7 +166,7 @@ class Import
 
             $importProduct = Import::create($product);
 
-            $importProduct->set_name($product->getModel());
+            $importProduct->set_name($product->getName());
 
             // product image 
             $importProduct->set_image_id($product->getImage()); 
@@ -218,7 +218,6 @@ class Import
                     $sizes = str_replace('½', ',5', $sizes);
                     \update_field(1223, $sizes, $postId);
                     \update_field(539565, $product->getMaterialColorName(), $postId);
-                    \update_field(546674, $product->getSchuheDeAvailable($product), $postId); // schuhe de checkbox
                     \update_post_meta($postId, '_import-hash', Import::createHash($product));
                 }
                 \wp_set_object_terms($postId, $product->getCategories(), 'product_cat');
@@ -346,8 +345,8 @@ class Import
         ]);
 
         if (count($posts) > 1) {
-            \Anni\Warning('Produkt Import', sprintf('Import Hash Duplikat %s (%s)', $product->getModel(), $product->getSku()), [
-                'name' => $product->getModel(),
+            \Anni\Warning('Produkt Import', sprintf('Import Hash Duplikat %s (%s)', $product->getName(), $product->getSku()), [
+                'name' => $product->getName(),
                 'sku' => $product->getSku(),
                 'hash' => $hash,
                 'postIds' => $posts,

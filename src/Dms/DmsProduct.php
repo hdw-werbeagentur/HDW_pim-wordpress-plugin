@@ -17,8 +17,6 @@ class DmsProduct implements ProductContract
 
     protected $colorIndex = 0;
 
-    protected $schuheDeApiKey;
-
     /**
      * Constructor
      *
@@ -29,7 +27,6 @@ class DmsProduct implements ProductContract
         $this->api = DmsApi::getInstance();
         $this->id = $id;
         $this->data = new \stdClass();
-        $this->schuheDeApiKey = get_theme_mod('schuhe-de-api-key') ?? '';
     }
 
     /**
@@ -75,8 +72,8 @@ class DmsProduct implements ProductContract
         }
         $product = $this->api->getProduct($this->id);
         $this->set($product);
-        $stock = $this->api->getProductStock($this->id);
-        $this->setStock($stock);
+        // $stock = $this->api->getProductStock($this->id);
+        // $this->setStock($stock);
 
         return $this;
     }
@@ -111,16 +108,6 @@ class DmsProduct implements ProductContract
     public function getData()
     {
         return $this->data;
-    }
-
-    /**
-     * Model
-     *
-     * @return string
-     **/
-    public function getModel(): string
-    {
-        return $this->data->formDescSimilarModelText;
     }
 
     /**
@@ -326,36 +313,6 @@ class DmsProduct implements ProductContract
     }
 
     /**
-     * Get schuhe.de availability informations
-     *
-     * @return array
-     **/
-    public function getSchuheDeAvailable($product)
-    {
-        $productExist = false;
-
-        // foreach through all gtin numbers
-        foreach ($product->getSizeDetails() as $size) {
-            $schuheDeResponse = sprintf('https://www.schuhe.de/rest/?s=get.stock.info&apiKey=%s&infoStock=true&gtin=%s', $this->schuheDeApiKey, $size->ean);
-
-            $response = wp_remote_get($schuheDeResponse);
-            $responseBody = wp_remote_retrieve_body($response);
-            $result = json_decode($responseBody);
-
-            if (is_wp_error($result)) {
-                return false;
-            }
-
-            if (isset($result->items) && $result->items > 0) {
-                $productExist = true;
-                break;
-            }
-        }
-     
-        return $productExist;
-    }
-
-    /**
      * Get product image
      *
      * @return array
@@ -456,6 +413,26 @@ class DmsProduct implements ProductContract
         }
 
         return \array_unique($sizes);
+    }
+
+    /**
+     * Get order number
+     *
+     * @return string
+     **/
+    public function getOrderNumber(): string
+    {
+        return $this->data->order_number ?? '';
+    }
+
+    /**
+     * Get order status
+     *
+     * @return string
+     **/
+    public function getStatus(): string
+    {
+        return $this->data->status ?? '';
     }
 
     /**

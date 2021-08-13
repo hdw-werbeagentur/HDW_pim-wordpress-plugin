@@ -14,6 +14,9 @@ class DmsProductsCollection
     /** @var array $products Array of DmsProduct objects */
     protected $products = [];
 
+    /** @var string $languageDmsSlug String of the selected language where the import should use  */
+    protected $languageDmsSlug;
+
     /**
      * Construct
      *
@@ -22,6 +25,7 @@ class DmsProductsCollection
     public function __construct()
     {
         $this->api = DmsApi::getInstance();
+        $this->languageDmsSlug = \getDmsSelectedLanguage() ?? '';
     }
 
     /**
@@ -52,7 +56,12 @@ class DmsProductsCollection
      **/
     public function load(): DmsProductsCollection
     {
-        $products = $this->api->getProducts();
+        if (!$this->languageDmsSlug) {
+            throw new Exception("Missing ERP language slug");
+        }
+
+        $products = $this->api->getProducts($this->languageDmsSlug);
+        
         $this->set($products);
 
         return $this;

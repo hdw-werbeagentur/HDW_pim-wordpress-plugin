@@ -3,6 +3,8 @@
 use GuzzleHttp\Client;
 use HDW\ProjectDmsImporter\Dms\DmsProduct;
 use HDW\ProjectDmsImporter\Dms\DmsProductsCollection;
+use HDW\ProjectDmsImporter\Dms\DmsLanguage;
+use HDW\ProjectDmsImporter\Dms\DmsLanguagesCollection;
 use HDW\ProjectDmsImporter\Import;
 
 function getDmsRestUser(): string
@@ -29,10 +31,10 @@ function getDMSApiToken(): string
     return trim($options['rest-api-token']) ?? '';
 }
 
-function getDmsProductsEndpoint(): string
+function getDmsProductsEndpoint(string $language): string
 {
     $options = get_option('hdw-dms-importer-settings');
-    return esc_url_raw(getDMSRestBase()) . $options['rest-products-endpoint'];
+    return esc_url_raw(getDMSRestBase()) . $options['rest-products-endpoint'] . $language;
 }
 
 function getDmsProductEndpoint(string $id): string
@@ -41,6 +43,18 @@ function getDmsProductEndpoint(string $id): string
     $endpoint = getDMSRestBase() . $options['rest-product-endpoint'];
     $endpoint = str_replace('{id}', $id, $endpoint);
     return esc_url_raw($endpoint);
+}
+
+function getDmsLanguagesEndpoint(): string
+{
+    $options = get_option('hdw-dms-importer-settings');
+    return esc_url_raw(getDMSRestBase()) . $options['rest-languages-endpoint'];
+}
+
+function getDmsSelectedLanguage(): string
+{
+    $options = get_option('hdw-dms-importer-settings');
+    return trim($options['rest-products-language']);
 }
 
 function getDmsProductStockEndpoint(string $id): string
@@ -80,6 +94,13 @@ function getDmsProduct($id): DmsProduct
     }
 
     return $product;
+}
+
+function getDmsLanguages(): DmsLanguagesCollection
+{
+    $collection = (new DmsLanguagesCollection())->load();
+
+    return $collection;
 }
 
 function getProductsBySKU(string $sku, array $filter = []): array
