@@ -282,7 +282,7 @@ class Admin
                                     <option value="<?= $language->getIso() ; ?>"
                                         <?php if(esc_attr($options['rest-products-language']) == $language->getIso()) echo 'selected' ?>
                                     >
-                                    <?=  $language->getName(); ?></option>';
+                                    <?= __($language->getName(), 'hdw-dms-importer'); ?></option>';
                                 <?php } ?>
                             </select>
                         <?php
@@ -352,38 +352,42 @@ class Admin
                             $classes = ['product'];
 
                             $args = [
-                                'post_status' => 'publish',
-                                'tax_query' => [
-                                    'taxonomy' => 'product_cat',
-                                    'terms' => ['shop'],
-                                    'field' => 'slug',
-                                ]
+                                'post_status' => 'any'
                             ];
 
-                            // $postProducts = \getProductsBySKU($product->getSku(), $args);
+                            // $args = [
+                            //     'post_status' => 'publish',
+                            //     'tax_query' => [
+                            //         'taxonomy' => 'product_cat',
+                            //         'terms' => ['shop'],
+                            //         'field' => 'slug',
+                            //     ]
+                            // ];
 
-                            // if (!empty($postProducts)) {
-                            //     $classes[] = 'product--in-shop';
-                            // } else {
-                            //     $args['post_status'] = 'draft';
-                            //     $postDraftProduct = \getProductsBySKU($product->getSku(), $args);
-                            //     $classes[] = (!empty($postDraftProduct)) ? 'product--is-draft' : '';
-                            // }
+                            $postProducts = \getProductsBySKU($product->getSku(), $args);
+
+                            if (!empty($postProducts)) {
+                                $classes[] = 'product--on-site';
+                            } else {
+                                $args['post_status'] = 'draft';
+                                $postDraftProduct = \getProductsBySKU($product->getSku(), $args);
+                                $classes[] = (!empty($postDraftProduct)) ? 'product--is-draft' : '';
+                            }
 
                             $class = 'product--is-out-of-sync';
-                            // $hash = $product->getHash();
-                            // foreach ($postProducts as $postProduct) {
-                            //     if ($hash == get_post_meta($postProduct->ID, '_import-hash', true)) {
-                            //         $class = 'product--is-in-sync';
-                            //     }
-                            // }
+                            $hash = $product->getHash();
+                            foreach ($postProducts as $postProduct) {
+                                if ($hash == get_post_meta($postProduct->ID, '_import-hash', true)) {
+                                    $class = 'product--is-in-sync';
+                                }
+                            }
                             $classes[] = $class;
                         ?>
                             <div class="<?= implode(' ', $classes) ?>">
                                 <input checked type="checkbox" class="product-input" name="product" id="product-<?= $product->getId() ?>" value="<?= $product->getId() ?>" checked />
                                 <label class="product-label" for="product-<?= $product->getId() ?>">
                                     <?= $product->getName() ?><br>
-                                    <small class="product-sku"><?= $product->getOrderNumber() ?> (<?= $product->getStatus() ?>)</small><br>
+                                    <small class="product-sku"><?= $product->getSku() ?> (<?= $product->getStatus() ?>)</small><br>
                                 </label>
                             </div>
                         <?php

@@ -18,10 +18,8 @@ interface ProductContract
     public function getPrices(): array;
     public function getPrice(string $size): int;
     public function getSizes(): array;
-    public function getOrderNumber(): string;
     public function getStatus(): string;
     public function getSku(): string;
-    public function getStock(): int;
     public function getWeight(): string;
     public function hasVariations(): bool;
 }

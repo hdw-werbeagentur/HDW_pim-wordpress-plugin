@@ -72,8 +72,6 @@ class DmsProduct implements ProductContract
         }
         $product = $this->api->getProduct($this->id);
         $this->set($product);
-        // $stock = $this->api->getProductStock($this->id);
-        // $this->setStock($stock);
 
         return $this;
     }
@@ -87,17 +85,6 @@ class DmsProduct implements ProductContract
     public function set(\stdClass $data): void
     {
         $this->data = $data;
-    }
-
-    /**
-     * Load product from ERP
-     *
-     * @param array $stock Stock
-     * @return void
-     **/
-    public function setStock(array $stock): void
-    {
-        $this->data->stock = $stock;
     }
 
     /**
@@ -257,16 +244,6 @@ class DmsProduct implements ProductContract
     }
 
     /**
-     * Get SKU
-     *
-     * @return string
-     **/
-    public function getSku(): string
-    {
-        return $this->data->colors[$this->colorIndex]->id ? transformSKU($this->data->colors[$this->colorIndex]->id) : '';
-    }
-
-    /**
      * Get colors
      *
      * @return array
@@ -416,11 +393,11 @@ class DmsProduct implements ProductContract
     }
 
     /**
-     * Get order number
+     * Get sku
      *
      * @return string
      **/
-    public function getOrderNumber(): string
+    public function getSku(): string
     {
         return $this->data->order_number ?? '';
     }
@@ -443,43 +420,6 @@ class DmsProduct implements ProductContract
     public function getSizeDetails(): array
     {
         return $this->data->colors[$this->colorIndex]->sizes ?? [];
-    }
-
-    /**
-     * Get stock
-     *
-     * @return int
-     **/
-    public function getStock(): int
-    {
-        return $this->data->stock ?? [];
-    }
-
-    /**
-     * Get stock
-     *
-     * @return int
-     **/
-    public function getStockSum(): int
-    {
-        $sum = 0;
-
-        foreach ($this->getSizeDetails() as $size) {
-            $sum += $size->qty;
-        }
-
-        return $sum;
-    }
-
-    /**
-     * Get stock
-     *
-     * @return int
-     **/
-    public function getStockStatus(): string
-    {
-        $status = false;
-        return $this->getStockSum() > 0 ? 'instock' : 'outofstock';
     }
 
     /**

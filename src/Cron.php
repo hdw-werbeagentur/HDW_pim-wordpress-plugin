@@ -38,9 +38,4 @@ class Cron
     {
         \updateProducts();
     }
-
-    public function updateStock()
-    {
-        \updateStocks();
-    }
 }

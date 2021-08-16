@@ -26,7 +26,7 @@ class DmsLanguage implements LanguageContract
      **/
     public function getName(): string
     {
-        return $this->data->native_name ?? '';
+        return $this->data->iso_name ?? '';
     }
 
     /**
@@ -72,7 +72,6 @@ class DmsLanguage implements LanguageContract
         }
         $language = $this->api->getLanguage($this->id);
         $this->set($language);
-        // $this->setStock($stock);
 
         return $this;
     }
@@ -87,17 +86,6 @@ class DmsLanguage implements LanguageContract
     {
         $this->data = $data;
     }
-
-    // /**
-    //  * Load product from ERP
-    //  *
-    //  * @param array $stock Stock
-    //  * @return void
-    //  **/
-    // public function setStock(array $stock): void
-    // {
-    //     $this->data->stock = $stock;
-    // }
 
     /**
      * Get data
@@ -164,15 +152,5 @@ class DmsLanguage implements LanguageContract
     //     }, $categories);
 
     //     return $cats;
-    // }
-
-    // /**
-    //  * Get order number
-    //  *
-    //  * @return string
-    //  **/
-    // public function getOrderNumber(): string
-    // {
-    //     return $this->data->order_number ?? '';
     // }
 }

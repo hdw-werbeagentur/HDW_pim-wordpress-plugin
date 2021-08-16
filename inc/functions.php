@@ -105,15 +105,14 @@ function getDmsLanguages(): DmsLanguagesCollection
 
 function getProductsBySKU(string $sku, array $filter = []): array
 {
-    $sku = transformSKU($sku);
     $args = [
-        'post_type' => ['product', 'product_variation'],
+        'post_type' => ['cpt_products'],
         'post_status' => 'any',
         'meta_query' => [
             [
                 'key' => '_sku',
                 'value' => $sku,
-            ]
+            ] 
         ],
         'orderby' => 'date',
         'order' => 'DESC',
@@ -172,35 +171,4 @@ function updateProducts()
     // }
 
     // \Anni\Info('Produkt Import', 'Import beendet');
-}
-
-function updateStocks()
-{
-    $originProducts = getDmsProducts();
-    foreach ($originProducts->get() as $originProduct) {
-        updateProductStockSKU($originProduct->getSku(), $originProduct->getStockSum());
-        foreach ($originProduct->getSizeDetails() as $size) {
-            updateProductStockSKU($size->id, $size->qty);
-        }
-    }
-}
-
-function updateProductStockSKU(string $sku, int $stock):void
-{
-    $products = \getProductsBySKU($sku);
-    foreach ($products as $product) {
-        update_post_meta($product->ID, '_stock', $stock);
-        update_post_meta($product->ID, '_stock_status', $stock > 0 ? 'instock' : 'outofstock');
-    }
-}
-
-function transformSKU(string $sku): string
-{
-    return str_replace([
-        '_',
-        '½',
-    ], [
-        '-',
-        ',5',
-    ], $sku);
 }
