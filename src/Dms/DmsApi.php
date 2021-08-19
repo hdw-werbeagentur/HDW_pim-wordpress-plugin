@@ -78,6 +78,23 @@ class DmsApi implements ErpApiContract
 
         $collection = json_decode($res->getBody()->getContents());
 
+        ############# brand filter start ##################
+        $brand = \getDmsSelectedBrand();
+
+        if($brand) {
+            if($brand != 'select') {
+                if ($collection) {
+                    foreach ($collection as $key => $product) {
+                        // remove products that are not matching with the brand
+                        if($product->attributes->brand->value != $brand) {
+                            unset($collection[$key]);
+                        }
+                    }
+                }
+            }
+        }
+        ############# brand filter end ###################
+
         return $collection;
     }
 
@@ -85,17 +102,23 @@ class DmsApi implements ErpApiContract
      * Get products
      *
      * @param string $id ERP product id
+     * @param string $language ERP product language
      *
      * @return DmsProduct
      **/
-    public function getProduct(string $id): ?\stdClass
+    public function getProduct(string $id, string $language): ?\stdClass
     {
         $client = new \GuzzleHttp\Client();
+        $headers = [
+            'Authorization' => 'Bearer ' . getDMSApiToken(),
+            'Accept'        => 'application/json',
+        ];
+
         $res = $client->request(
             'GET',
-            getDmsProductEndpoint($id),
+            getDmsProductEndpoint($id, $language),
             [
-                'auth' => [getDmsRestUser(), getDmsRestPassword()]
+                'headers' => $headers
             ]
         );
 
@@ -103,7 +126,7 @@ class DmsApi implements ErpApiContract
             return null;
         }
 
-        return json_decode($res->getBody()->getContents())->response[0];
+        return json_decode($res->getBody()->getContents());
     }
 
     /**

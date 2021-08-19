@@ -34,9 +34,17 @@ class Import
 
         $id = \sanitize_text_field($_REQUEST['id']);
 
-        $product = \getDmsProduct($id);
+        $language = \getDmsSelectedLanguage();
+
+        $product = \getDmsProduct($id, $language);
 
         $postIds = $this->importProduct($product);
+
+        // echo $postIds[0];
+
+        // $test = get_post([
+        //     'ID' => $postIds[0]
+        // ]);
 
         if (empty($postIds)) {
             // \Anni\Error(
@@ -50,13 +58,9 @@ class Import
             \wp_send_json_error();
         }
 
-        if ($_POST['progressIteration'] == $_POST['progressLimit']) {
-            // \Anni\Info('Produkt Import', 'Import beendet');
-        }
-
         \wp_send_json_success([
             'IDs' => $postIds,
-            // 'data' => $product->getData(),
+            'data' => $product->getData(),
         ]);
     }
 
@@ -124,26 +128,70 @@ class Import
     public static function importProduct(ProductContract $product): array
     {
         $skipUpdate = Import::getProductByHash($product);
-        
-        if ($skipUpdate && 1 == 2) {
-            // \Anni\Info('Produkt Import', sprintf('Überspringe Produkt %s (%s)', $product->getName(), $product->getSku()), [
-            //     'name' => $product->getName(),
-            //     'sku' => $product->getSku(),
-            // ]);
+
+        if ($skipUpdate) {
             wp_update_post([
                 'ID' => $skipUpdate,
                 'post_status' => 'publish'
-            ]);
-            return [$skipUpdate];
+            ]);   
         }
+        
+        // if ($skipUpdate && 1 == 2) {
+        //     // \Anni\Info('Produkt Import', sprintf('Überspringe Produkt %s (%s)', $product->getName(), $product->getSku()), [
+        //     //     'name' => $product->getName(),
+        //     //     'sku' => $product->getSku(),
+        //     // ]);
+        //     wp_update_post([
+        //         'ID' => $skipUpdate,
+        //         'post_status' => 'publish'
+        //     ]);
+        //     return [$skipUpdate];
+        // }
 
         $postIds = [];
 
-        // $importProduct = Import::create($product);
         $postId = Import::create($product);
 
+        $postIds[] = $postId;
+
         if ($postId) {
+
+            \update_post_meta($postId, '_thumbnail', $product->getThumbnail());
+            // \update_post_meta($postId, '_sku', $product->getDescription());
+            // \update_post_meta($postId, '_sku', $product->getShortDescription());
+            // \update_post_meta($postId, '_sku', $product->getImage());
+
+
             \update_post_meta($postId, '_sku', $product->getSku());
+            \update_post_meta($postId, '_brand', $product->getBrand()); 
+            \update_post_meta($postId, '_master-number', $product->getMasterNumber()); 
+            \update_post_meta($postId, '_sales-units', $product->getSalesUnits()); 
+            \update_post_meta($postId, '_packaging-type', $product->getPackagingType()); 
+            \update_post_meta($postId, '_properties-usp', $product->getPropertiesUsp()); 
+            \update_post_meta($postId, '_icons-usp', $product->getIconsUsp()); 
+            \update_post_meta($postId, '_profile', $product->getProfile()); 
+            \update_post_meta($postId, '_eco-flower-nr', $product->getEcoFlowerNr()); 
+            \update_post_meta($postId, '_nordic-swan-nr', $product->getNordicSwanNr()); 
+            \update_post_meta($postId, '_sds', $product->getSds()); 
+            \update_post_meta($postId, '_si-ti', $product->getSiTi()); 
+            \update_post_meta($postId, '_operating-instructions-de', $product->getOperatingInstructionsDe()); 
+            \update_post_meta($postId, '_application-pictograms-picture', $product->getApplicationPictogramsPicture()); 
+            \update_post_meta($postId, '_application-pictograms-text', $product->getApplicationPictogramsText()); 
+            \update_post_meta($postId, '_application-category', $product->getApplicationCategory()); 
+            \update_post_meta($postId, '_application-range-si-ti', $product->getApplicationRangeSiTi()); 
+            \update_post_meta($postId, '_scope-of-application-picture', $product->getScopeOfApplicationPicture()); 
+            \update_post_meta($postId, '_application-purposes', $product->getApplicationPurposes()); 
+            \update_post_meta($postId, '_dosage', $product->getDosage()); 
+            \update_post_meta($postId, '_product-composition', $product->getProductComposition()); 
+            \update_post_meta($postId, '_surface-material', $product->getSurfaceMaterial()); 
+            \update_post_meta($postId, '_ph-value', $product->getPhValue()); 
+            \update_post_meta($postId, '_colour-odour', $product->getColourOdour()); 
+            \update_post_meta($postId, '_water-hardness', $product->getWaterHardness()); 
+            \update_post_meta($postId, '_dosing-systems', $product->getDosingSystems()); 
+            \update_post_meta($postId, '_ean-code', $product->getEanCode()); 
+            \update_post_meta($postId, '_dosage-table', $product->getDosageTable()); 
+            \update_post_meta($postId, '_disinfection-table', $product->getDisinfectionTable()); 
+            \update_post_meta($postId, '_product-certificates', $product->getProductCertificates()); 
             \update_post_meta($postId, '_import-hash', Import::createHash($product));
         }
 
@@ -182,9 +230,6 @@ class Import
         //     if ($postId) {
         //         if (function_exists('update_field')) {
         //             \update_field(1219, implode(', ', $product->getAttribute('Material')), $postId);
-        //             foreach ($product->getColorNames() as $productId => $color) {
-        //                 \update_field(1220, $color, $postId);
-        //             }
         //             \update_field(1221, implode(', ', $product->getAttribute('Schuhtyp')), $postId);
         //             \update_field(1222, implode(', ', $product->getAttribute('Sohle')), $postId);
         //             $sizes = count($product->getSizes()) ? reset($product->getSizes()) . ' - ' . end($product->getSizes()) : reset($product->getSizes());
@@ -209,14 +254,7 @@ class Import
     {
         $hash = $product->getHash();
         $posts = get_posts([
-            'post_type' => 'product',
-            'tax_query' => [
-                [
-                    'taxonomy' => 'product_cat',
-                    'terms' => ['shop'],
-                    'field' => 'slug',
-                ],
-            ],
+            'post_type' => 'cpt_products',
             'meta_query' => [
                 [
                     'key' => '_import-hash',
@@ -229,12 +267,12 @@ class Import
         ]);
 
         if (count($posts) > 1) {
-            \Anni\Warning('Produkt Import', sprintf('Import Hash Duplikat %s (%s)', $product->getName(), $product->getSku()), [
-                'name' => $product->getName(),
-                'sku' => $product->getSku(),
-                'hash' => $hash,
-                'postIds' => $posts,
-            ]);
+            // \Anni\Warning('Produkt Import', sprintf('Import Hash Duplikat %s (%s)', $product->getName(), $product->getSku()), [
+            //     'name' => $product->getName(),
+            //     'sku' => $product->getSku(),
+            //     'hash' => $hash,
+            //     'postIds' => $posts,
+            // ]);
         }
 
         if (count($posts) != 1) {
@@ -249,25 +287,18 @@ class Import
      *
      * @return void
      **/
-    public static function cleanShop(bool $shouldSkipProducts = true): void
+    public static function cleanShop(bool $shouldSkipProducts = true)
     {
         if ($shouldSkipProducts) {
             $skip = [];
             $skipProducts = \getDmsProducts();
-        }
 
-        // $posts = get_posts([
-        //     'post_type' => 'product',
-        //     'tax_query' => [
-        //         [
-        //             'taxonomy' => 'product_cat',
-        //             'terms' => ['shop'],
-        //             'field' => 'slug',
-        //         ],
-        //     ],
-        //     'showposts' => -1,
-        //     'fields' => 'ids',
-        // ]);
+            if (!empty($skipProducts)) {
+                foreach ($skipProducts->get() as $skipProduct) {
+                    $skip[] = $skipProduct->getSku();
+                }
+            }
+        }
 
         $posts = get_posts([
             'post_type' => 'cpt_products',

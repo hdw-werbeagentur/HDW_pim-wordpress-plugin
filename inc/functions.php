@@ -37,11 +37,12 @@ function getDmsProductsEndpoint(string $language): string
     return esc_url_raw(getDMSRestBase()) . $options['rest-products-endpoint'] . $language;
 }
 
-function getDmsProductEndpoint(string $id): string
+function getDmsProductEndpoint(string $id, string $language): string
 {
     $options = get_option('hdw-dms-importer-settings');
     $endpoint = getDMSRestBase() . $options['rest-product-endpoint'];
     $endpoint = str_replace('{id}', $id, $endpoint);
+    $endpoint = str_replace('{language}', $language, $endpoint);
     return esc_url_raw($endpoint);
 }
 
@@ -54,22 +55,15 @@ function getDmsLanguagesEndpoint(): string
 function getDmsSelectedLanguage(): string
 {
     $options = get_option('hdw-dms-importer-settings');
+
     return trim($options['rest-products-language']);
 }
-
-function getDmsProductStockEndpoint(string $id): string
+ 
+function getDmsSelectedBrand(): string
 {
     $options = get_option('hdw-dms-importer-settings');
-    $endpoint = getDMSRestBase() . $options['rest-product-stock-endpoint'];
-    $endpoint = str_replace('{id}', $id, $endpoint);
-    return esc_url_raw($endpoint);
-}
 
-function getDmsProductStockCorrectionEndpoint(): string
-{
-    $options = get_option('hdw-dms-importer-settings');
-    $endpoint = getDMSRestBase() . $options['rest-product-stock-correction-endpoint'];
-    return esc_url_raw($endpoint);
+    return trim($options['rest-products-brand']);
 }
 
 function getDmsProducts(): DmsProductsCollection
@@ -86,11 +80,11 @@ function getDmsProducts(): DmsProductsCollection
     return $collection;
 }
 
-function getDmsProduct($id): DmsProduct
+function getDmsProduct($id, $language): DmsProduct
 {
-    if (false === $product = get_transient('logisoft-product-' . $id)) {
-        $product = (new DmsProduct($id))->load();
-        set_transient('logisoft-product-' . $id, $product, MINUTE_IN_SECONDS * 15);
+    if (false === $product = get_transient('logisoft-product-' . $id . '-' . $language)) {
+        $product = (new DmsProduct($id, $language))->load();
+        set_transient('logisoft-product-' . $id . '-' . $language, $product, MINUTE_IN_SECONDS * 15);
     }
 
     return $product;
@@ -145,21 +139,14 @@ function updateProducts()
         Import::importProduct($product);
     }
 
-    $posts = get_posts([
-            'post_type' => 'product',
-            'tax_query' => [
-                [
-                    'taxonomy' => 'product_cat',
-                    'terms' => ['shop'],
-                    'field' => 'slug',
-                ],
-            ],
-            'showposts' => -1,
-            'fields' => 'ids',
-            'post_status' => 'publish',
-        ]);
+    // $posts = get_posts([
+    //         'post_type' => 'cpt_products',
+    //         'showposts' => -1,
+    //         'fields' => 'ids',
+    //         'post_status' => 'publish',
+    //     ]);
 
-    $postCount = count($posts);
+    // $postCount = count($posts);
 
     // if ($postCount != $productsCount) {
     //     \Anni\Warning('Produkt Import', sprintf('Es wurden %d von %d Produkte importiert', $postCount, $productsCount), [

@@ -6,6 +6,8 @@ use HDW\ProjectDmsImporter\Dms\DmsApi;
 use HDW\ProjectDmsImporter\Contracts\ErpApiContract;
 use HDW\ProjectDmsImporter\Contracts\ProductContract;
 
+use function GuzzleHttp\json_decode;
+
 class DmsProduct implements ProductContract
 {
 
@@ -17,6 +19,9 @@ class DmsProduct implements ProductContract
 
     protected $colorIndex = 0;
 
+    /** @var string $languageDmsSlug String of the selected language where the import should use  */
+    protected $languageDmsSlug;
+
     /**
      * Constructor
      *
@@ -27,6 +32,7 @@ class DmsProduct implements ProductContract
         $this->api = DmsApi::getInstance();
         $this->id = $id;
         $this->data = new \stdClass();
+        $this->languageDmsSlug = \getDmsSelectedLanguage() ?? '';
     }
 
     /**
@@ -37,6 +43,333 @@ class DmsProduct implements ProductContract
     public function getName(): string
     {
         return $this->data->name ?? '';
+    }
+
+    /**
+     * Get brand
+     *
+     * @return string Product brand
+     **/
+    public function getBrand(): string
+    {
+        return $this->data->attributes->brand->value ?? '';
+    }
+
+    /**
+     * Get master number
+     *
+     * @return string Product master number
+     **/
+    public function getMasterNumber(): string
+    { 
+        $value = json_decode($this->data->attributes->{'master-number'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get format
+     *
+     * @return string Product format
+     **/
+    public function getFormat(): string
+    {
+        $value = json_decode($this->data->attributes->format->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get sales units
+     *
+     * @return string Sales units
+     **/
+    public function getSalesUnits(): string
+    {
+        $value = json_decode($this->data->attributes->{'sales-units'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get packaging type
+     *
+     * @return string Product packaging type
+     **/
+    public function getPackagingType(): string
+    { 
+        $value = json_decode($this->data->attributes->{'packaging-type'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product properties usp
+     *
+     * @return string Product properties usp
+     **/
+    public function getPropertiesUsp(): string
+    { 
+        $value = json_decode($this->data->attributes->{'product-properties-usp'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product icons usp usp
+     *
+     * @return string Product properties usp
+     **/
+    public function getIconsUsp(): string
+    { 
+        $value = json_decode($this->data->attributes->{'product-icons-usp'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product profile
+     *
+     * @return string Product profile
+     **/
+    public function getProfile(): string
+    { 
+        $value = json_decode($this->data->attributes->{'product-profile'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product eco flower nr
+     *
+     * @return string Product eco flower nr
+     **/
+    public function getEcoFlowerNr(): string
+    { 
+        $value = json_decode($this->data->attributes->ecoflowernr->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product nordic swan nr
+     *
+     * @return string Product nordic swan nr
+     **/
+    public function getNordicSwanNr(): string
+    {
+        $value = json_decode($this->data->attributes->nordicswannr->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product sds
+     *
+     * @return string Product sds
+     **/
+    public function getSds(): string
+    { 
+        $value = json_decode($this->data->attributes->sds->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product si ti
+     *
+     * @return string Product si ti
+     **/
+    public function getSiTi(): string
+    { 
+        $value = json_decode($this->data->attributes->{'si-ti'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product operating instructions de
+     *
+     * @return string Product operating instructions de
+     **/
+    public function getOperatingInstructionsDe(): string
+    { 
+        $value = json_decode($this->data->attributes->{'operating-instructions-de'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product application pictograms picture
+     *
+     * @return string Product application pictograms picture
+     **/
+    public function getApplicationPictogramsPicture(): string
+    { 
+        $value = json_decode($this->data->attributes->{'application-pictograms-picture'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product application pictograms text
+     *
+     * @return string Product application pictograms text
+     **/
+    public function getApplicationPictogramsText(): string
+    { 
+        $value = json_decode($this->data->attributes->{'application-pictograms-text'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product application category
+     *
+     * @return string Product application category
+     **/
+    public function getApplicationCategory(): string
+    { 
+        $value = json_decode($this->data->attributes->{'application-category'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product application range si ti
+     *
+     * @return string Product application range si ti
+     **/
+    public function getApplicationRangeSiTi(): string
+    { 
+        $value = json_decode($this->data->attributes->{'application-range-si-ti'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product scope of application picture
+     *
+     * @return string Product scope of application picture
+     **/
+    public function getScopeOfApplicationPicture(): string
+    { 
+        $value = json_decode($this->data->attributes->{'scope-of-application-picture'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product application purposes
+     *
+     * @return string Product application purposes
+     **/
+    public function getApplicationPurposes(): string
+    { 
+        $value = json_decode($this->data->attributes->{'application-purposes'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product dosage
+     *
+     * @return string Product dosage
+     **/
+    public function getDosage(): string
+    { 
+        $value = json_decode($this->data->attributes->dosage->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product composition
+     *
+     * @return string Product composition
+     **/
+    public function getProductComposition(): string
+    { 
+        $value = json_decode($this->data->attributes->{'product-composition'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product surface material
+     *
+     * @return string Product surface material
+     **/
+    public function getSurfaceMaterial(): string
+    { 
+        $value = json_decode($this->data->attributes->{'surface-material'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product ph value
+     *
+     * @return string Product ph value
+     **/
+    public function getPhValue(): string
+    { 
+        $value = json_decode($this->data->attributes->{'ph-value'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product colour odour
+     *
+     * @return string Product colour odour
+     **/
+    public function getColourOdour(): string
+    { 
+        $value = json_decode($this->data->attributes->{'colour-odour'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product water hardness
+     *
+     * @return string Product water hardness
+     **/
+    public function getWaterHardness(): string
+    { 
+        return $this->data->attributes->{'water-hardness'}->value ?? '';
+    }
+
+    /**
+     * Get product dosing systems
+     *
+     * @return string Product dosing systems
+     **/
+    public function getDosingSystems(): string
+    { 
+        return $this->data->attributes->{'dosing-systems'}->value ?? '';
+    }
+
+    /**
+     * Get product ean code
+     *
+     * @return string Product ean code
+     **/
+    public function getEanCode(): string
+    { 
+        $value = json_decode($this->data->attributes->{'ean-code'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product dosage table
+     *
+     * @return string Product dosage table
+     **/
+    public function getDosageTable(): string
+    { 
+        $value = json_decode($this->data->attributes->{'dosage-table'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product disinfection table
+     *
+     * @return string Product disinfection table
+     **/
+    public function getDisinfectionTable(): string
+    { 
+        $value = json_decode($this->data->attributes->{'disinfection-table'}->value);
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get product certificates
+     *
+     * @return string Product certificates
+     **/
+    public function getProductCertificates(): string
+    { 
+        $value = json_decode($this->data->attributes->{'product-certificates'}->value);
+        return $value->t ?? '';
     }
 
     /**
@@ -70,7 +403,12 @@ class DmsProduct implements ProductContract
         if (!$this->id) {
             throw new Exception("Missing ERP product id");
         }
-        $product = $this->api->getProduct($this->id);
+
+        if (!$this->languageDmsSlug) {
+            throw new Exception("Missing ERP language slug");
+        }
+
+        $product = $this->api->getProduct($this->id, $this->languageDmsSlug);
         $this->set($product);
 
         return $this;
@@ -102,67 +440,67 @@ class DmsProduct implements ProductContract
      *
      * @return string
      **/
-    public function getArticle(): string
-    {
-        return $this->data->article ?? '';
-    }
+    // public function getArticle(): string
+    // {
+    //     return $this->data->article ?? '';
+    // }
 
     /**
      * Get product categories
      *
      * @return array Categories
      **/
-    public function getCategories(): array
-    {
-        $categories[] = $this->data->modelGroup;
-        $categories[] = $this->data->salesGroupDesc;
-        $categories[] = $this->getMaterialColorName();
-        foreach (['Einlage', 'Schuhtyp', 'Verschluss', 'Funktion', 'Geschlecht'] as $attributeKey) {
-            $attributes = $this->getAttribute($attributeKey);
+    // public function getCategories(): array
+    // {
+    //     $categories[] = $this->data->modelGroup;
+    //     $categories[] = $this->data->salesGroupDesc;
+    //     $categories[] = $this->getMaterialColorName();
+    //     foreach (['Einlage', 'Schuhtyp', 'Verschluss', 'Funktion', 'Geschlecht'] as $attributeKey) {
+    //         $attributes = $this->getAttribute($attributeKey);
 
-            if (is_array($attributes)) {
-                $categories = array_merge($categories, $attributes);
-            } else {
-                $categories[] = $attributes;
-            }
+    //         if (is_array($attributes)) {
+    //             $categories = array_merge($categories, $attributes);
+    //         } else {
+    //             $categories[] = $attributes;
+    //         }
 
-            $attributesGroup = $this->getAttributeGroup($attributeKey);
+    //         $attributesGroup = $this->getAttributeGroup($attributeKey);
 
-            if($attributesGroup[0] == 'Einlage') {
-                $attributesGroup[0] = 'Einlegesohlen';
-            }
+    //         if($attributesGroup[0] == 'Einlage') {
+    //             $attributesGroup[0] = 'Einlegesohlen';
+    //         }
 
-            if (is_array($attributesGroup)) {
-                $categories = array_merge($categories, $attributesGroup);
-            } else {
-                $categories[] = $attributesGroup;
-            }
-        }
-        // don't add Shop category if category Einlegesohlen exists
-        if(!in_array('Einlegesohlen', $categories)) {
-            $categories[] = 'Shop';
-        }
+    //         if (is_array($attributesGroup)) {
+    //             $categories = array_merge($categories, $attributesGroup);
+    //         } else {
+    //             $categories[] = $attributesGroup;
+    //         }
+    //     }
+    //     // don't add Shop category if category Einlegesohlen exists
+    //     if(!in_array('Einlegesohlen', $categories)) {
+    //         $categories[] = 'Shop';
+    //     }
 
-        $cats = array_map(function ($value) {
-            return str_replace([
-                'Hirsch'
-            ], [
-                'MyDeer'
-            ], $value);
-        }, $categories);
+    //     $cats = array_map(function ($value) {
+    //         return str_replace([
+    //             'Hirsch'
+    //         ], [
+    //             'MyDeer'
+    //         ], $value);
+    //     }, $categories);
 
-        return $cats;
-    }
+    //     return $cats;
+    // }
 
-    /**
-     * Weight
-     *
-     * @return string
-     **/
-    public function getWeight(): string
-    {
-        return $this->data->weight / 1000 ?? '';
-    }
+    // /**
+    //  * Weight
+    //  *
+    //  * @return string
+    //  **/
+    // public function getWeight(): string
+    // {
+    //     return $this->data->weight / 1000 ?? '';
+    // }
 
     /**
      * Description
@@ -171,226 +509,239 @@ class DmsProduct implements ProductContract
      **/
     public function getDescription(): string
     {
-        return $this->data->colors[$this->colorIndex]->modelText ?? $this->data->modelText;
+        return $this->data->description ?? '';
     }
+
+    /**
+     * Short Description
+     *
+     * @return string
+     **/
+    public function getShortDescription(): string
+    {
+        return $this->data->short_description ?? '';
+    }
+
+    // /**
+    //  * Post Thumbnail Id
+    //  *
+    //  * @return int
+    //  **/
+    // public function getPrice(string $size): int
+    // {
+    //     return 0;
+    // }
+
+    // /**
+    //  * Post Thumbnail Id
+    //  *
+    //  * @return int
+    //  **/
+    // public function getPrices(): array
+    // {
+    //     return [];
+    // }
 
     /**
      * Post Thumbnail Id
      *
      * @return int
      **/
-    public function getPrice(string $size): int
-    {
-        return 0;
-    }
-
-    /**
-     * Post Thumbnail Id
-     *
-     * @return int
-     **/
-    public function getPrices(): array
-    {
-        return [];
-    }
-
-    /**
-     * Post Thumbnail Id
-     *
-     * @return int
-     **/
-    public function getPostThumbnailId(): int
-    {
-        return 0;
-    }
+    // public function getPostThumbnailId(): int
+    // {
+    //     return 0;
+    // }
 
     /**
      * Get product attribute
      *
      * @return string
      **/
-    public function getAttribute(string $key): array
-    {
-        $attributes = [];
-        foreach ($this->data->modelSelectcrit as $attribute) {
-            if ($attribute->name != $key) {
-                continue;
-            }
+    // public function getAttribute(string $key): array
+    // {
+    //     $attributes = [];
+    //     foreach ($this->data->modelSelectcrit as $attribute) {
+    //         if ($attribute->name != $key) {
+    //             continue;
+    //         }
 
-            foreach ($attribute->modelSelectcritPos as $criteria) {
-                $attributes[] = $criteria->pos;
-            }
-        }
+    //         foreach ($attribute->modelSelectcritPos as $criteria) {
+    //             $attributes[] = $criteria->pos;
+    //         }
+    //     }
 
-        return $attributes;
-    }
+    //     return $attributes;
+    // }
 
-    /**
-     * Get product attribute group
-     *
-     * @return string
-     **/
-    public function getAttributeGroup(string $key): array
-    {
-        $attributeGroup = [];
-        foreach ($this->data->group as $attribute) {
-            if ($attribute != $key) {
-                continue;
-            }
-            $attributeGroup[] = $attribute;
-        }
+    // /**
+    //  * Get product attribute group
+    //  *
+    //  * @return string
+    //  **/
+    // public function getAttributeGroup(string $key): array
+    // {
+    //     $attributeGroup = [];
+    //     foreach ($this->data->group as $attribute) {
+    //         if ($attribute != $key) {
+    //             continue;
+    //         }
+    //         $attributeGroup[] = $attribute;
+    //     }
 
-        return $attributeGroup;
-    }
-
-    /**
-     * Get colors
-     *
-     * @return array
-     **/
-    public function getColors(): array
-    {
-        return $this->data->colors;
-    }
+    //     return $attributeGroup;
+    // }
 
     /**
      * Get colors
      *
      * @return array
      **/
-    public function getColorNames(): array
-    {
-        $colors = [];
+    // public function getColors(): array
+    // {
+    //     return $this->data->colors;
+    // }
 
-        foreach ($this->data->colors as $color) {
-            $colors[$color->id] = $color->color;
-        }
-
-        return $colors;
-    }
-
-    /**
-     * Get colors
-     *
-     * @return array
-     **/
-    public function getColorName(): string
-    {
-        return $this->data->colors[$this->colorIndex]->color;
-    }
-
-    /**
-     * Get material color
-     *
-     * @return array
-     **/
-    public function getMaterialColorName(): string
-    {
-        return $this->data->colors[$this->colorIndex]->mainMaterialColorDesc;
-    }
+    // /**
+    //  * Get colors
+    //  *
+    //  * @return array
+    //  **/
+    // public function getColorName(): string
+    // {
+    //     return $this->data->colors[$this->colorIndex]->color;
+    // }
 
     /**
      * Get product image
      *
-     * @return array
+     * @return string
      **/
-    public function getImage(): ?int
+    public function getImage(): string
     {
-        global $wpdb;
-        $sku = $this->getSku();
-        // firstly check if image -2 exist
-        $sql = "SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' AND guid LIKE '%$sku-2%' ORDER BY ID DESC LIMIT 1";
-        $attachmentId = $wpdb->get_var($sql);
-        
-        if($attachmentId) {
-            return $attachmentId;    
-        } else {
-            // if image -2 doesn't exist, get fallback image
-            $sql = "SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' AND guid LIKE '%$sku%' ORDER BY ID DESC LIMIT 1";
-            $attachmentId = $wpdb->get_var($sql);
+        $aws = 'https://dmswernermertz.s3.eu-central-1.amazonaws.com/';
 
-            // get woocommerce fallback image if no image was found
-            if(!$attachmentId && get_option('woocommerce_placeholder_image')) {
-                $attachmentId = get_option('woocommerce_placeholder_image');
-            }
-
-            return $attachmentId ?? null;
-        }
+        return $this->data->image ? $aws . $this->data->image : '';
     }
 
     /**
-     * Get product gallery images
+     * Get product image thumbnail
      *
-     * @return array
+     * @return string
      **/
-    public function getImages(): array
+    public function getThumbnail(): string
     {
-        global $wpdb;
-        $sku = str_replace('_', '-', $this->getSku());
-        $sql = "SELECT ID, guid FROM $wpdb->posts WHERE post_type = 'attachment' AND guid LIKE '%$sku-%' ORDER BY guid ASC";
-        $result = $wpdb->get_results($sql);
+        $image = $this->data->image ?? '';
 
-        $gallery = [];
-        $duplicates = [];
-
-        if(!empty($result)) {
-            $numberOfGalleryImages = 5;
-
-            foreach ($result as $value) {
-                // allow only -1 to -5
-                for ($i=1; $i <= $numberOfGalleryImages; $i++) {
-                    if (FALSE !== strpos($value->guid, strtolower($sku) . '-' . $i . '.jpg')) {
-                        $duplicates[$value->ID] = strtolower($sku) . '-' . $i . '.jpg';
-                        continue;
-                    }
-                }
-            }
-
-            // order array by key DESC to get the newest images
-            krsort($duplicates);
-
-            // remove duplicates
-            $duplicates = array_unique($duplicates);
-
-            // sort by values ASC (name)
-            asort($duplicates);
-
-            foreach ($duplicates as $key => $d) {
-                $gallery[] = $key;
-            }
-
-            // swap position from -1 and -2 if at least 2 element exists
-            if(count($gallery) > 1) {
-                $temporary = $gallery[0];
-                $gallery[0] = $gallery[1];
-                $gallery[1] = $temporary;
-            }
+        if($image == '') {
+            return '';
         }
-        
-        return $gallery ?? null;
+
+        $aws = 'https://dmswernermertz.s3.eu-central-1.amazonaws.com/';
+
+        $basename = basename($image);
+
+        $thumbnail =  str_replace($basename, '' , $image) . 'thumbs/' . basename($image); 
+
+        return $aws . $thumbnail;
     }
+
+    // public function getImage(): ?int
+    // {
+    //     global $wpdb;
+    //     $sku = $this->getSku();
+    //     // firstly check if image -2 exist
+    //     $sql = "SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' AND guid LIKE '%$sku-2%' ORDER BY ID DESC LIMIT 1";
+    //     $attachmentId = $wpdb->get_var($sql);
+        
+    //     if($attachmentId) {
+    //         return $attachmentId;    
+    //     } else {
+    //         // if image -2 doesn't exist, get fallback image
+    //         $sql = "SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' AND guid LIKE '%$sku%' ORDER BY ID DESC LIMIT 1";
+    //         $attachmentId = $wpdb->get_var($sql);
+
+    //         // get woocommerce fallback image if no image was found
+    //         if(!$attachmentId && get_option('woocommerce_placeholder_image')) {
+    //             $attachmentId = get_option('woocommerce_placeholder_image');
+    //         }
+
+    //         return $attachmentId ?? null;
+    //     }
+    // }
+
+    // /**
+    //  * Get product gallery images
+    //  *
+    //  * @return array
+    //  **/
+    // public function getImages(): array
+    // {
+    //     global $wpdb;
+    //     $sku = str_replace('_', '-', $this->getSku());
+    //     $sql = "SELECT ID, guid FROM $wpdb->posts WHERE post_type = 'attachment' AND guid LIKE '%$sku-%' ORDER BY guid ASC";
+    //     $result = $wpdb->get_results($sql);
+
+    //     $gallery = [];
+    //     $duplicates = [];
+
+    //     if(!empty($result)) {
+    //         $numberOfGalleryImages = 5;
+
+    //         foreach ($result as $value) {
+    //             // allow only -1 to -5
+    //             for ($i=1; $i <= $numberOfGalleryImages; $i++) {
+    //                 if (FALSE !== strpos($value->guid, strtolower($sku) . '-' . $i . '.jpg')) {
+    //                     $duplicates[$value->ID] = strtolower($sku) . '-' . $i . '.jpg';
+    //                     continue;
+    //                 }
+    //             }
+    //         }
+
+    //         // order array by key DESC to get the newest images
+    //         krsort($duplicates);
+
+    //         // remove duplicates
+    //         $duplicates = array_unique($duplicates);
+
+    //         // sort by values ASC (name)
+    //         asort($duplicates);
+
+    //         foreach ($duplicates as $key => $d) {
+    //             $gallery[] = $key;
+    //         }
+
+    //         // swap position from -1 and -2 if at least 2 element exists
+    //         if(count($gallery) > 1) {
+    //             $temporary = $gallery[0];
+    //             $gallery[0] = $gallery[1];
+    //             $gallery[1] = $temporary;
+    //         }
+    //     }
+        
+    //     return $gallery ?? null;
+    // }
         
     /**
      * Get sizes
      *
      * @return array
      **/
-    public function getSizes(): array
-    {
-        $sizes = [];
-        if (!isset($this->data->colors[$this->colorIndex])) {
-            return $sizes;
-        }
+    // public function getSizes(): array
+    // {
+    //     $sizes = [];
+    //     if (!isset($this->data->colors[$this->colorIndex])) {
+    //         return $sizes;
+    //     }
 
-        foreach ($this->data->colors[$this->colorIndex]->sizes as $size) {
-            if (!isset($size->size)) {
-                continue;
-            }
-            $sizes[$size->id] = $size->size;
-        }
+    //     foreach ($this->data->colors[$this->colorIndex]->sizes as $size) {
+    //         if (!isset($size->size)) {
+    //             continue;
+    //         }
+    //         $sizes[$size->id] = $size->size;
+    //     }
 
-        return \array_unique($sizes);
-    }
+    //     return \array_unique($sizes);
+    // }
 
     /**
      * Get sku
@@ -427,27 +778,14 @@ class DmsProduct implements ProductContract
      *
      * @return bool
      **/
-    public function hasVariations(): bool
-    {
-        return true;
-    }
+    // public function hasVariations(): bool
+    // {
+    //     return true;
+    // }
 
     public function getHash(): string
     {
         $data = $this->getData();
         return md5(json_encode($data));
-    }
-
-    public function setColor(int $index): bool
-    {
-        $colors = $this->getColors();
-
-        if (!isset($colors[$index])) {
-            return false;
-        }
-
-        $this->colorIndex = $index;
-
-        return true;
     }
 }

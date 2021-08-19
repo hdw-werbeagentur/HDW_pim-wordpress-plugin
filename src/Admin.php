@@ -97,54 +97,23 @@ class Admin
         <h2><?php _e('Dashboard', 'hdw-dms-importer') ?></h2>
         <table class="form-table">
             <tr>
-                <th><?php _e('Anzahl Kollektions Produkte', 'hdw-dms-importer') ?></th>
+                <th><?php _e('Anzahl Produkte', 'hdw-dms-importer') ?></th>
                 <td>
                     <?php
                     echo count(\get_posts([
-                        'post_type' => 'product',
-                        'tax_query' => [
-                            [
-                                'taxonomy' => 'product_cat',
-                                'terms' => 'kollektion',
-                                'field' => 'slug',
-                            ]
-                        ],
+                        'post_type' => 'cpt_products',
                         'fields' => 'ids',
                         'showposts' => -1,
                     ])); ?>
                 </td>
             </tr>
             <tr>
-                <th><?php _e('Anzahl Shop Produkte', 'hdw-dms-importer') ?></th>
+                <th><?php _e('Anzahl Produkte auf Entwurf', 'hdw-dms-importer') ?></th>
                 <td>
                     <?php
                     echo count(\get_posts([
-                        'post_type' => 'product',
-                        'tax_query' => [
-                            [
-                                'taxonomy' => 'product_cat',
-                                'terms' => 'shop',
-                                'field' => 'slug',
-                            ],
-                        ],
-                        'fields' => 'ids',
-                        'showposts' => -1,
-                    ])); ?>
-                </td>
-            </tr>
-            <tr>
-                <th><?php _e('Anzahl Händler Produkte', 'hdw-dms-importer') ?></th>
-                <td>
-                    <?php
-                    echo count(\get_posts([
-                        'post_type' => 'product',
-                        'tax_query' => [
-                            [
-                                'taxonomy' => 'product_cat',
-                                'terms' => 'haendlerbereich',
-                                'field' => 'slug',
-                            ]
-                        ],
+                        'post_type' => 'cpt_products',
+                        'post_status' => 'draft',
                         'fields' => 'ids',
                         'showposts' => -1,
                     ])); ?>
@@ -161,13 +130,24 @@ class Admin
      **/
     protected function tabImport(): void
     {
-        ?>
+    ?>
         <h2><?php _e('Import') ?></h2>
+        <h4><?= __('Language', 'hdw-dms-importer') . ': ' . \getDmsSelectedLanguage(); ?></h4>
+        
+        <?php
+            $brand = \getDmsSelectedBrand();    
+            if ($brand != 'select') {
+                echo '<h4>' . __('Brand', 'hdw-dms-importer') . ': ' . \getDmsSelectedBrand() . '</h4>';
+            }
+        ?>
 
         <?php
-        if (wp_verify_nonce($_POST['preview-waldlaeufer-logisoft-import-nonce'], 'preview-waldlaeufer-logisoft-import')) {
+        // if (wp_verify_nonce($_POST['preview-waldlaeufer-logisoft-import-nonce'], 'preview-waldlaeufer-logisoft-import')) {
+        //     $this->previewImport();
+        // } 
+        if (isset($_POST['preview-waldlaeufer-logisoft-import-nonce'])) {
             $this->previewImport();
-        } 
+        }
         ?>
 
         <?php if (empty($_POST)) {
@@ -182,7 +162,6 @@ class Admin
         }
     }
 
-
     /**
      * Tab: Settings
      *
@@ -192,10 +171,15 @@ class Admin
     {
         if (!empty($_POST) && \wp_verify_nonce($_POST['hdw-dms-importer-settings-nonce'], 'save-hdw-dms-importer-settings')) {
             // delete transients if language have changed
-            if(\getDmsSelectedLanguage() != sanitize_text_field($_POST['rest-products-language'])) {
+            if (\getDmsSelectedLanguage() != sanitize_text_field($_POST['rest-products-language'])) {
                 delete_transient('logisoft-products-collection');
             }
-            
+
+            // delete transients if brand filter have changed
+            if (\getDmsSelectedBrand() != sanitize_text_field($_POST['rest-products-brand'])) {
+                delete_transient('logisoft-products-collection');
+            }
+
             $options = [
                 'rest-username' => $_POST['rest-username'],
                 'rest-password' => $_POST['rest-password'] && \str_repeat('*', 8) != $_POST['rest-password'] ? $_POST['rest-password'] : getDmsRestPassword(),
@@ -204,9 +188,8 @@ class Admin
                 'rest-products-endpoint' => sanitize_text_field($_POST['rest-products-endpoint']),
                 'rest-product-endpoint' => sanitize_text_field($_POST['rest-product-endpoint']),
                 'rest-products-language' => sanitize_text_field($_POST['rest-products-language']),
-                'rest-languages-endpoint' => sanitize_text_field($_POST['rest-languages-endpoint']),
-                // 'rest-product-stock-endpoint' => sanitize_text_field($_POST['rest-product-stock-endpoint']),
-                // 'rest-product-stock-correction-endpoint' => sanitize_text_field($_POST['rest-product-stock-correction-endpoint']),
+                'rest-products-brand' => sanitize_text_field($_POST['rest-products-brand']),
+                'rest-languages-endpoint' => sanitize_text_field($_POST['rest-languages-endpoint'])
             ];
             \update_option('hdw-dms-importer-settings', $options)
         ?>
@@ -256,13 +239,24 @@ class Admin
                     <th><?php _e('Product Endpoint', 'hdw-dms-importer') ?></th>
                     <td>
                         <?= getDMSRestBase() ?><input type="text" name="rest-product-endpoint" value="<?= esc_attr($options['rest-product-endpoint']) ?>" /><br>
-                        <small><?php _e('{id} is replaced with the product id from erp') ?></small>
+                        <small><?php _e('{id} is replaced with the product id from erp') ?></small><br>
+                        <small><?php _e('{language} is replaced with the product language from erp') ?></small>
                     </td>
                 </tr>
                 <tr>
                     <th><?php _e('Languages Endpoint', 'hdw-dms-importer') ?></th>
                     <td>
                         <?= getDMSRestBase() ?><input type="text" name="rest-languages-endpoint" value="<?= esc_attr($options['rest-languages-endpoint']) ?>" /><br>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Brand Filter', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <select name="rest-products-brand" id="rest-products-brand">
+                            <option value='select' <?php if (isset($options['rest-products-brand']) && esc_attr($options['rest-products-brand']) == 'select') echo 'selected'; ?>><?= __('Select Brand', 'hdw-dms-importer') ?></option>
+                            <option value='green care PROFESSIONAL' <?php if (isset($options['rest-products-brand']) && esc_attr($options['rest-products-brand']) == 'green care PROFESSIONAL') echo 'selected'; ?>><?= __('green care PROFESSIONAL', 'hdw-dms-importer') ?></option>
+                            <option value='tana PROFESSIONAL' <?php if (isset($options['rest-products-brand']) && esc_attr($options['rest-products-brand']) == 'tana PROFESSIONAL') echo 'selected'; ?>><?= __('tana PROFESSIONAL', 'hdw-dms-importer') ?></option>
+                        </select>
                     </td>
                 </tr>
                 <tr>
@@ -274,15 +268,13 @@ class Admin
                     </th>
                     <td>
                         <?php
-                        if($contentLanguages) { ?>
+                        if ($contentLanguages) { ?>
                             <select name="rest-products-language" id="rest-product-language">
-                                <option name='select' <?php if(esc_attr($options['rest-products-language']) == 'select') echo 'selected'; ?>><?= __('Select language', 'hdw-dms-importer') ?></option>
+                                <option name='select' <?php if (esc_attr($options['rest-products-language']) == 'select') echo 'selected'; ?>><?= __('Select language', 'hdw-dms-importer') ?></option>
 
                                 <?php foreach ($contentLanguages->get() as $language) { ?>
-                                    <option value="<?= $language->getIso() ; ?>"
-                                        <?php if(esc_attr($options['rest-products-language']) == $language->getIso()) echo 'selected' ?>
-                                    >
-                                    <?= __($language->getName(), 'hdw-dms-importer'); ?></option>';
+                                    <option value="<?= $language->getIso(); ?>" <?php if (esc_attr($options['rest-products-language']) == $language->getIso()) echo 'selected' ?>>
+                                        <?= __($language->getName(), 'hdw-dms-importer'); ?></option>;
                                 <?php } ?>
                             </select>
                         <?php
@@ -290,19 +282,6 @@ class Admin
                         ?>
                     </td>
                 </tr>
-                <!-- <tr>
-                    <th><?php _e('Product Stock Endpoint', 'hdw-dms-importer') ?></th>
-                    <td>
-                        <?= getDMSRestBase() ?><input type="text" name="rest-product-stock-endpoint" value="<?= esc_attr($options['rest-product-stock-endpoint']) ?>" /><br>
-                        <small><?php _e('{id} is replaced with the product id from erp') ?></small>
-                    </td>
-                </tr>
-                <tr>
-                    <th><?php _e('Stock Correction Endpoint', 'hdw-dms-importer') ?></th>
-                    <td>
-                        <?= getDMSRestBase() ?><input type="text" name="rest-product-stock-correction-endpoint" value="<?= esc_attr($options['rest-product-stock-correction-endpoint']) ?>" /><br>
-                    </td>
-                </tr> -->
             </table>
             <p>
                 <button class="button button-primary" type="submit"><?php _e('Save') ?></button>
@@ -320,6 +299,7 @@ class Admin
     public function previewImport(): void
     {
         $products = \getDmsProducts();
+
         // \Anni\Info('Produkt Import', 'Erstelle Vorschau von Logisoft Produkten', [
         //     'count' => $products->getCount(),
         // ]); 
@@ -348,7 +328,6 @@ class Admin
                     <div class="products">
                         <?php
                         foreach ($products->get() as $product) {
-                            $colorIndex = 0;
                             $classes = ['product'];
 
                             $args = [
@@ -376,6 +355,7 @@ class Admin
 
                             $class = 'product--is-out-of-sync';
                             $hash = $product->getHash();
+
                             foreach ($postProducts as $postProduct) {
                                 if ($hash == get_post_meta($postProduct->ID, '_import-hash', true)) {
                                     $class = 'product--is-in-sync';
@@ -386,7 +366,7 @@ class Admin
                             <div class="<?= implode(' ', $classes) ?>">
                                 <input checked type="checkbox" class="product-input" name="product" id="product-<?= $product->getId() ?>" value="<?= $product->getId() ?>" checked />
                                 <label class="product-label" for="product-<?= $product->getId() ?>">
-                                    <?= $product->getName() ?><br>
+                                    <?= $product->getName() ?> <?= $product->getFormat(); ?><br>
                                     <small class="product-sku"><?= $product->getSku() ?> (<?= $product->getStatus() ?>)</small><br>
                                 </label>
                             </div>

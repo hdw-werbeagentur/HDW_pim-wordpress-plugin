@@ -6,7 +6,7 @@ use HDW\ProjectDmsImporter\Contracts\ProductContract;
 
 interface ErpApiContract
 {
-    public function getProduct(string $id): ?\stdClass;
+    public function getProduct(string $id, string $language): ?\stdClass;
     public function getProducts(string $language): array;
-    public function getLanguages(): array;
+    public function getLanguages(): array; 
 }
