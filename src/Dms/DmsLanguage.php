@@ -2,7 +2,7 @@
 
 namespace HDW\ProjectDmsImporter\Dms;
 
-use HDW\ProjectDmsImporter\Dms\DmsLanguage;
+use HDW\ProjectDmsImporter\Dms\DmsApi;
 use HDW\ProjectDmsImporter\Contracts\LanguageContract;
 
 class DmsLanguage implements LanguageContract
@@ -42,22 +42,12 @@ class DmsLanguage implements LanguageContract
     /**
      * Get Iso slug
      *
-     * @return string Language ID
+     * @return string Language iso
      **/
     public function getIso(): string
     {
         return $this->data->iso_639_1 ?? '';
     }
-
-    // /**
-    //  * Get Product ID slug
-    //  *
-    //  * @return string Product ID slug
-    //  **/
-    // public function getIdSlug(): string
-    // {
-    //     return str_replace('_', '-', $this->getId());
-    // }
 
     /**
      * Load language from ERP
@@ -96,61 +86,4 @@ class DmsLanguage implements LanguageContract
     {
         return $this->data;
     }
-
-    // /**
-    //  * Article number
-    //  *
-    //  * @return string
-    //  **/
-    // public function getArticle(): string
-    // {
-    //     return $this->data->article ?? '';
-    // }
-
-    // /**
-    //  * Get product categories
-    //  *
-    //  * @return array Categories
-    //  **/
-    // public function getCategories(): array
-    // {
-    //     $categories[] = $this->data->modelGroup;
-    //     $categories[] = $this->data->salesGroupDesc;
-    //     $categories[] = $this->getMaterialColorName();
-    //     foreach (['Einlage', 'Schuhtyp', 'Verschluss', 'Funktion', 'Geschlecht'] as $attributeKey) {
-    //         $attributes = $this->getAttribute($attributeKey);
-
-    //         if (is_array($attributes)) {
-    //             $categories = array_merge($categories, $attributes);
-    //         } else {
-    //             $categories[] = $attributes;
-    //         }
-
-    //         $attributesGroup = $this->getAttributeGroup($attributeKey);
-
-    //         if($attributesGroup[0] == 'Einlage') {
-    //             $attributesGroup[0] = 'Einlegesohlen';
-    //         }
-
-    //         if (is_array($attributesGroup)) {
-    //             $categories = array_merge($categories, $attributesGroup);
-    //         } else {
-    //             $categories[] = $attributesGroup;
-    //         }
-    //     }
-    //     // don't add Shop category if category Einlegesohlen exists
-    //     if(!in_array('Einlegesohlen', $categories)) {
-    //         $categories[] = 'Shop';
-    //     }
-
-    //     $cats = array_map(function ($value) {
-    //         return str_replace([
-    //             'Hirsch'
-    //         ], [
-    //             'MyDeer'
-    //         ], $value);
-    //     }, $categories);
-
-    //     return $cats;
-    // }
 }

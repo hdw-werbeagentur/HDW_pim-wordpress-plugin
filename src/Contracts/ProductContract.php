@@ -10,6 +10,7 @@ interface ProductContract
     public function getStatus(): string;
     public function getImage(): string;
     public function getThumbnail(): string; 
+    public function getThumbnails(): array; 
     public function getName(): string;
     public function getSku(): string;
     public function getBrand(): string;

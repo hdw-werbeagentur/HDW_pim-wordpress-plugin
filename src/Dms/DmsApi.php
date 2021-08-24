@@ -159,4 +159,35 @@ class DmsApi implements ErpApiContract
 
         return $collection;
     }
+
+    /**
+     * Get languages
+     *
+     * @return array
+     **/
+    public function getApiImages(): array
+    {
+        $client = new \GuzzleHttp\Client();
+        $collection = [];
+        $headers = [
+            'Authorization' => 'Bearer ' . getDMSApiToken(),
+            'Accept'        => 'application/json',
+        ];
+
+        $res = $client->request(
+            'GET',
+            getDmsImagesEndpoint(),
+            [
+                'headers' => $headers
+            ]
+        );
+
+        if (200 != $res->getStatusCode()) {
+            return $collection;
+        }
+
+        $collection = json_decode($res->getBody()->getContents());
+
+        return $collection;
+    }
 }

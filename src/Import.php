@@ -167,7 +167,7 @@ class Import
             
 
             \update_post_meta($postId, '_thumbnail', $product->getThumbnail());
-
+            \update_post_meta($postId, '_thumbnails', $product->getThumbnails());
             \update_post_meta($postId, '_sku', $product->getSku());
             \update_post_meta($postId, 'product-order-amount', $product->getFormat());
             \update_post_meta($postId, '_brand', $product->getBrand()); 

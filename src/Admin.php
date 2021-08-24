@@ -190,7 +190,10 @@ class Admin
                 'rest-products-language' => sanitize_text_field($_POST['rest-products-language']),
                 'rest-file-root-path' => sanitize_text_field($_POST['rest-file-root-path']),
                 'rest-products-brand' => sanitize_text_field($_POST['rest-products-brand']),
-                'rest-languages-endpoint' => sanitize_text_field($_POST['rest-languages-endpoint'])
+                'rest-languages-endpoint' => sanitize_text_field($_POST['rest-languages-endpoint']),
+                'rest-images-endpoint' => sanitize_text_field($_POST['rest-images-endpoint']),
+                'rest-product-overview-image' => sanitize_text_field($_POST['rest-product-overview-image']),
+                'rest-product-detail-page-image' => sanitize_text_field($_POST['rest-product-detail-page-image'])
             ];
             \update_option('hdw-dms-importer-settings', $options)
         ?>
@@ -251,6 +254,12 @@ class Admin
                     </td>
                 </tr>
                 <tr>
+                    <th><?php _e('Images Endpoint', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <?= getDMSRestBase() ?><input type="text" name="rest-images-endpoint" value="<?= esc_attr($options['rest-images-endpoint'] ?? '') ?>" /><br>
+                    </td>
+                </tr>
+                <tr>
                     <th><?php _e('Image Root Path', 'hdw-dms-importer') ?><br>
                         <?php _e('(AWS Server for an example)', 'hdw-dms-importer') ?>
                     </th>
@@ -284,6 +293,46 @@ class Admin
                                 <?php foreach ($contentLanguages->get() as $language) { ?>
                                     <option value="<?= $language->getIso(); ?>" <?php if (esc_attr($options['rest-products-language']) == $language->getIso()) echo 'selected' ?>>
                                         <?= __($language->getName(), 'hdw-dms-importer'); ?></option>;
+                                <?php } ?>
+                            </select>
+                        <?php
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Image Product overview page', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <?php
+                        $imageSizes = \getDmsImageSizes();
+
+                        if ($imageSizes) { ?>
+                            <select name="rest-product-overview-image" id="rest-product-overview-image">
+                                <option name="select" <?php if (esc_attr($options['rest-product-overview-image'] ?? '') == 'select') echo "selected"; ?>><?= __('Select thumbnail size', 'hdw-dms-importer') ?></option>
+
+                                <?php foreach ($imageSizes->get() as $size) { ?>
+                                    <option value="<?= $size->getName(); ?>" <?php if (esc_attr($options['rest-product-overview-image'] ?? '') == $size->getName()) echo 'selected' ?>>
+                                        <?= ucfirst($size->getName()); ?> (<?= __($size->getSize(), 'hdw-dms-importer'); ?>)
+                                    </option>;
+                                <?php } ?>
+                            </select>
+                        <?php
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Image Product detail page', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <?php
+                        if ($imageSizes) { ?>
+                            <select name="rest-product-detail-page-image" id="rest-product-detail-page-image">
+                                <option name="select" <?php if (esc_attr($options['rest-product-detail-page-image'] ?? '') == 'select') echo "selected"; ?>><?= __('Select thumbnail size', 'hdw-dms-importer') ?></option>
+
+                                <?php foreach ($imageSizes->get() as $size) { ?>
+                                    <option value="<?= $size->getName(); ?>" <?php if (esc_attr($options['rest-product-detail-page-image'] ?? '') == $size->getName()) echo 'selected' ?>>
+                                        <?= ucfirst($size->getName()); ?> (<?= __($size->getSize(), 'hdw-dms-importer'); ?>)
+                                    </option>;
                                 <?php } ?>
                             </select>
                         <?php

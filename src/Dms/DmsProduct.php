@@ -645,6 +645,58 @@ class DmsProduct implements ProductContract
         return $aws . $thumbnail;
     }
 
+    /**
+     * Get product image thumbnails
+     *
+     * @return string
+     **/
+    public function getThumbnails(): array
+    {
+        $image = $this->data->image ?? '';
+
+        if($image == '') {
+            return '';
+        }
+
+        $aws = \getFileRootPath();
+
+        $imageSizes = \getDmsImageSizes();
+
+        $sizes = [];
+
+        $basename = basename($image);
+
+        if ($imageSizes) {
+            foreach ($imageSizes->get() as $size) {
+
+                $thumbnail = str_replace($basename, '', $image) . 'thumbs/' . basename($image);
+
+                $subdirectory = '';
+                
+                if ($size->getName() != 'thumbnail') {
+
+                    if ($size->getWidth() > 0 && $size->getHeight() > 0) {
+                        $subdirectory = $size->getWidth() . '_' . $size->getHeight() . '/';
+                    }
+
+                    if ($size->getWidth() == 0 && $size->getHeight() > 0) {
+                        $subdirectory = 'height_' . $size->getHeight() . '/';
+                    }
+
+                    if ($size->getWidth() > 0 && $size->getHeight() == 0) {
+                        $subdirectory = 'width_' . $size->getWidth() . '/';
+                    }
+
+                    $thumbnail = str_replace($basename, '', $image) . 'thumbs/' . $subdirectory . basename($image);
+                }
+
+                $sizes[$size->getName()] = $aws . $thumbnail;
+            }
+        }
+
+        return $sizes;
+    }
+
     // public function getImage(): ?int
     // {
     //     global $wpdb;
