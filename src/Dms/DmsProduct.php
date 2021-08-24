@@ -618,7 +618,7 @@ class DmsProduct implements ProductContract
      **/
     public function getImage(): string
     {
-        $aws = 'https://dmswernermertz.s3.eu-central-1.amazonaws.com/';
+        $aws = \getFileRootPath();
 
         return $this->data->image ? $aws . $this->data->image : '';
     }
@@ -636,7 +636,7 @@ class DmsProduct implements ProductContract
             return '';
         }
 
-        $aws = 'https://dmswernermertz.s3.eu-central-1.amazonaws.com/';
+        $aws = \getFileRootPath();
 
         $basename = basename($image);
 

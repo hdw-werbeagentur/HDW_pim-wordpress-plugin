@@ -155,14 +155,21 @@ class Import
         $postIds[] = $postId;
 
         if ($postId) {
+            // set post
+            \wp_update_post(['ID' => $postId, 'post_content' => $product->getDescription()]);
+
+            // set taxonomies
+            \wp_set_object_terms($postId, $product->getFormat(), 'tax_products_package_size');
+
+            // set meta fields
+            \update_post_meta($postId, 'product-order-number', $product->getSku());
+            \update_post_meta($postId, 'product-subtitle', $product->getShortDescription());
+            
 
             \update_post_meta($postId, '_thumbnail', $product->getThumbnail());
-            // \update_post_meta($postId, '_sku', $product->getDescription());
-            // \update_post_meta($postId, '_sku', $product->getShortDescription());
-            // \update_post_meta($postId, '_sku', $product->getImage());
-
 
             \update_post_meta($postId, '_sku', $product->getSku());
+            \update_post_meta($postId, 'product-order-amount', $product->getFormat());
             \update_post_meta($postId, '_brand', $product->getBrand()); 
             \update_post_meta($postId, '_master-number', $product->getMasterNumber()); 
             \update_post_meta($postId, '_sales-units', $product->getSalesUnits()); 
@@ -194,52 +201,6 @@ class Import
             \update_post_meta($postId, '_product-certificates', $product->getProductCertificates()); 
             \update_post_meta($postId, '_import-hash', Import::createHash($product));
         }
-
-        //     // product image 
-        //     $importProduct->set_image_id($product->getImage()); 
-
-        //     $importProduct->set_status('publish');
-        //     $importProduct->set_description($product->getDescription());
-        //     $importProduct->set_catalog_visibility('visible');
-        //     $importProduct->set_sku($product->getSku()); // We can't use set_sku as SKU has to be unique
-        //     $importProduct->set_weight($product->getWeight());
-
-        //     // Sizes
-        //     $attribute->set_id(\wc_attribute_taxonomy_id_by_name('pa_size')); //if passing the attribute name to get the ID
-        //     $attribute->set_name('pa_size'); //attribute name
-        //     $attribute->set_options(array_map(function ($value) {
-        //         return str_replace('½', ',5', $value);
-        //     }, $product->getSizes())); // attribute value
-
-        //     $attribute->set_position(1); //attribute display order
-        //     $attribute->set_visible(1); //attribute visiblity
-        //     $attribute->set_variation(1); //to use this attribute as variation or not
-        //     $attributes[] = $attribute;
-        //     $importProduct->set_attributes($attributes);
-
-        //     $defaultSize = Import::findDefaultSize($product);
-        //     if ($defaultSize) {
-        //         $importProduct->set_default_attributes([
-        //             'pa_size' => $defaultSize
-        //         ]);
-        //     }
-
-        //     $postId = $importProduct->save();
-        //     $postIds[] = $postId;
-
-        //     if ($postId) {
-        //         if (function_exists('update_field')) {
-        //             \update_field(1219, implode(', ', $product->getAttribute('Material')), $postId);
-        //             \update_field(1221, implode(', ', $product->getAttribute('Schuhtyp')), $postId);
-        //             \update_field(1222, implode(', ', $product->getAttribute('Sohle')), $postId);
-        //             $sizes = count($product->getSizes()) ? reset($product->getSizes()) . ' - ' . end($product->getSizes()) : reset($product->getSizes());
-        //             $sizes = str_replace('½', ',5', $sizes);
-        //             \update_field(1223, $sizes, $postId);
-        //             \update_field(539565, $product->getMaterialColorName(), $postId);
-        //             \update_post_meta($postId, '_import-hash', Import::createHash($product));
-        //         }
-        //         \wp_set_object_terms($postId, $product->getCategories(), 'product_cat');
-        //     }
 
         return $postIds;
     }

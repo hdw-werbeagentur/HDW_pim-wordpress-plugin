@@ -56,14 +56,21 @@ function getDmsSelectedLanguage(): string
 {
     $options = get_option('hdw-dms-importer-settings');
 
-    return trim($options['rest-products-language']);
+    return trim($options['rest-products-language'] ?? '');
 }
- 
+
+function getFileRootPath(): string
+{
+    $options = get_option('hdw-dms-importer-settings');
+
+    return trailingslashit(esc_url_raw($options['rest-file-root-path'] ?? '')) ?? '';
+}
+
 function getDmsSelectedBrand(): string
 {
     $options = get_option('hdw-dms-importer-settings');
 
-    return trim($options['rest-products-brand']);
+    return trim($options['rest-products-brand'] ?? '');
 }
 
 function getDmsProducts(): DmsProductsCollection
@@ -100,13 +107,13 @@ function getDmsLanguages(): DmsLanguagesCollection
 function getProductsBySKU(string $sku, array $filter = []): array
 {
     $args = [
-        'post_type' => ['cpt_products'],
+        'post_type' => 'cpt_products',
         'post_status' => 'any',
         'meta_query' => [
             [
                 'key' => '_sku',
                 'value' => $sku,
-            ] 
+            ]
         ],
         'orderby' => 'date',
         'order' => 'DESC',
@@ -158,4 +165,23 @@ function updateProducts()
     // }
 
     // \Anni\Info('Produkt Import', 'Import beendet');
+}
+
+add_action('single_product_download_after', 'add_aws_image_to_backend_product');
+
+function add_aws_image_to_backend_product($postId)
+{
+    echo '<label for="image-thumbnail">' . __('Thumbnail', 'hdw-dms-importer') . '</label>';
+
+    $thumbnail = get_post_meta($postId, '_thumbnail', true);
+
+    if ($thumbnail) {
+        echo '<img src="' . $thumbnail . '" alt="">';
+    }
+
+    $dmsRestBase = \getDMSRestBase();
+
+    if ($dmsRestBase) {
+        echo '<br><a href="' . str_replace('/api/', '', $dmsRestBase) . '" target="_blank">' . __('Edit Product in the DMS', 'hdw-dms-importer') . '</a>';
+    }
 }

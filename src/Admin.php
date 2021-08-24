@@ -133,12 +133,12 @@ class Admin
     ?>
         <h2><?php _e('Import') ?></h2>
         <h4><?= __('Language', 'hdw-dms-importer') . ': ' . \getDmsSelectedLanguage(); ?></h4>
-        
+
         <?php
-            $brand = \getDmsSelectedBrand();    
-            if ($brand != 'select') {
-                echo '<h4>' . __('Brand', 'hdw-dms-importer') . ': ' . \getDmsSelectedBrand() . '</h4>';
-            }
+        $brand = \getDmsSelectedBrand();
+        if ($brand != 'select') {
+            echo '<h4>' . __('Brand', 'hdw-dms-importer') . ': ' . \getDmsSelectedBrand() . '</h4>';
+        }
         ?>
 
         <?php
@@ -188,6 +188,7 @@ class Admin
                 'rest-products-endpoint' => sanitize_text_field($_POST['rest-products-endpoint']),
                 'rest-product-endpoint' => sanitize_text_field($_POST['rest-product-endpoint']),
                 'rest-products-language' => sanitize_text_field($_POST['rest-products-language']),
+                'rest-file-root-path' => sanitize_text_field($_POST['rest-file-root-path']),
                 'rest-products-brand' => sanitize_text_field($_POST['rest-products-brand']),
                 'rest-languages-endpoint' => sanitize_text_field($_POST['rest-languages-endpoint'])
             ];
@@ -247,6 +248,14 @@ class Admin
                     <th><?php _e('Languages Endpoint', 'hdw-dms-importer') ?></th>
                     <td>
                         <?= getDMSRestBase() ?><input type="text" name="rest-languages-endpoint" value="<?= esc_attr($options['rest-languages-endpoint']) ?>" /><br>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?php _e('Image Root Path', 'hdw-dms-importer') ?><br>
+                        <?php _e('(AWS Server for an example)', 'hdw-dms-importer') ?>
+                    </th>
+                    <td>
+                        <input type="url" class="regular-text" name="rest-file-root-path" value="<?= getFileRootPath() ?>" />
                     </td>
                 </tr>
                 <tr>
