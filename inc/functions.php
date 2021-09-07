@@ -240,3 +240,42 @@ function add_aws_image_to_product_single_page($postId)
 <?php
     }
 }
+
+/**
+ * Delete all transients from the database whose keys have a specific prefix.
+ *
+ * @param string $prefix The prefix. Example: 'my_cool_transient_'.
+ */
+function delete_transients_with_prefix($prefix)
+{
+    foreach (get_transient_keys_with_prefix($prefix) as $key) {
+        delete_transient($key);
+    }
+}
+
+/**
+ * Gets all transient keys in the database with a specific prefix.
+ *
+ * Note that this doesn't work for sites that use a persistent object
+ * cache, since in that case, transients are stored in memory.
+ *
+ * @param  string $prefix Prefix to search for.
+ * @return array          Transient keys with prefix, or empty array on error.
+ */
+function get_transient_keys_with_prefix($prefix)
+{
+    global $wpdb;
+
+    $prefix = $wpdb->esc_like('_transient_' . $prefix);
+    $sql    = "SELECT 'gcp_options' FROM $wpdb->options WHERE 'gcp_options' LIKE '%s'";
+    $keys   = $wpdb->get_results($wpdb->prepare($sql, $prefix . '%'), ARRAY_A);
+
+    if (is_wp_error($keys)) {
+        return [];
+    }
+
+    return array_map(function ($key) {
+        // Remove '_transient_' from the option name.
+        return ltrim($key['gcp_options'], '_transient_');
+    }, $keys);
+}

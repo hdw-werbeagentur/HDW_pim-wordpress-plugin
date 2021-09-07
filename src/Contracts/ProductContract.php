@@ -8,6 +8,8 @@ interface ProductContract
     public function getShortDescription(): string;
     public function getId(): string;
     public function getStatus(): string;
+    public function getProductType(): string;
+    public function getVariants(): array; 
     public function getImage(): string;
     public function getThumbnail(): string; 
     public function getThumbnails(): array; 
@@ -43,15 +45,4 @@ interface ProductContract
     public function getDosageTable(): string; 
     public function getDisinfectionTable(): string; 
     public function getProductCertificates(): string; 
-    // public function getArticle(): string;
-    // public function getAttribute(string $key): array;
-    // public function getAttributeGroup(string $key): array;
-    // public function getCategories(): array;
-    // public function getWeight(): string;
-    // public function hasVariations(): bool;
-    // public function getImages(): array;
-    // public function getSizes(): array;
-    // public function getPostThumbnailId(): int;
-    // public function getPrices(): array;
-    // public function getPrice(string $size): int;
 }

@@ -169,7 +169,7 @@ class Import
             \update_post_meta($postId, '_thumbnail', $product->getThumbnail());
             \update_post_meta($postId, '_thumbnails', $product->getThumbnails());
             \update_post_meta($postId, '_sku', $product->getSku());
-            \update_post_meta($postId, 'product-order-amount', $product->getFormat());
+            \update_post_meta($postId, 'product-order-amount', $product->getFormat() . ' ' . $product->getPackagingType());
             \update_post_meta($postId, '_brand', $product->getBrand()); 
             \update_post_meta($postId, '_master-number', $product->getMasterNumber()); 
             \update_post_meta($postId, '_sales-units', $product->getSalesUnits()); 
@@ -199,6 +199,40 @@ class Import
             \update_post_meta($postId, '_dosage-table', $product->getDosageTable()); 
             \update_post_meta($postId, '_disinfection-table', $product->getDisinfectionTable()); 
             \update_post_meta($postId, '_product-certificates', $product->getProductCertificates()); 
+            ################## variants ######################
+            $variants = $product->getVariants();
+            if (count($variants) > 0) {
+                if (isset($variants[0])) {
+                    \update_post_meta($postId, 'product-order-number-second', $variants[0]->order_number ?? '');
+                    \update_post_meta($postId, 'product-order-amount-second', ($variants[0]->format ?? '') . ' ' . ($variants[0]->packaging_type ?? ''));
+                }
+
+                if (isset($variants[1])) {
+                    \update_post_meta($postId, 'product-order-number-third', $variants[1]->order_number ?? '');
+                    \update_post_meta($postId, 'product-order-amount-third', ($variants[1]->format ?? '') . ' ' . ($variants[1]->packaging_type ?? ''));
+                }
+
+                if (isset($variants[2])) {
+                    \update_post_meta($postId, 'product-order-number-fourth', $variants[2]->order_number ?? '');
+                    \update_post_meta($postId, 'product-order-amount-fourth', ($variants[2]->format ?? '') . ' ' . ($variants[2]->packaging_type ?? ''));
+                }
+
+                if (isset($variants[3])) {
+                    \update_post_meta($postId, 'product-order-number-fifth', $variants[3]->order_number ?? '');
+                    \update_post_meta($postId, 'product-order-amount-fifth', ($variants[3]->format ?? '') . ' ' . ($variants[3]->packaging_type ?? ''));
+                }
+                
+                if (isset($variants[4])) {
+                    \update_post_meta($postId, 'product-order-number-sixth', $variants[4]->order_number ?? '');
+                    \update_post_meta($postId, 'product-order-amount-sixth', ($variants[4]->format ?? '') . ' ' . ($variants[4]->packaging_type ?? ''));
+                }
+
+                if (isset($variants[5])) {
+                    \update_post_meta($postId, 'product-order-number-seventh', $variants[5]->order_number ?? '');
+                    \update_post_meta($postId, 'product-order-amount-seventh', ($variants[50]->format ?? '') . ' ' . ($variants[5]->packaging_type ?? ''));
+                }
+            } 
+
             \update_post_meta($postId, '_import-hash', Import::createHash($product));
         }
 

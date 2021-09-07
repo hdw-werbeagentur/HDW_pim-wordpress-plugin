@@ -19,6 +19,8 @@ class DmsProduct implements ProductContract
 
     protected $colorIndex = 0;
 
+    protected $variants = [];
+
     /** @var string $languageDmsSlug String of the selected language where the import should use  */
     protected $languageDmsSlug;
 
@@ -522,95 +524,6 @@ class DmsProduct implements ProductContract
         return $this->data->short_description ?? '';
     }
 
-    // /**
-    //  * Post Thumbnail Id
-    //  *
-    //  * @return int
-    //  **/
-    // public function getPrice(string $size): int
-    // {
-    //     return 0;
-    // }
-
-    // /**
-    //  * Post Thumbnail Id
-    //  *
-    //  * @return int
-    //  **/
-    // public function getPrices(): array
-    // {
-    //     return [];
-    // }
-
-    /**
-     * Post Thumbnail Id
-     *
-     * @return int
-     **/
-    // public function getPostThumbnailId(): int
-    // {
-    //     return 0;
-    // }
-
-    /**
-     * Get product attribute
-     *
-     * @return string
-     **/
-    // public function getAttribute(string $key): array
-    // {
-    //     $attributes = [];
-    //     foreach ($this->data->modelSelectcrit as $attribute) {
-    //         if ($attribute->name != $key) {
-    //             continue;
-    //         }
-
-    //         foreach ($attribute->modelSelectcritPos as $criteria) {
-    //             $attributes[] = $criteria->pos;
-    //         }
-    //     }
-
-    //     return $attributes;
-    // }
-
-    // /**
-    //  * Get product attribute group
-    //  *
-    //  * @return string
-    //  **/
-    // public function getAttributeGroup(string $key): array
-    // {
-    //     $attributeGroup = [];
-    //     foreach ($this->data->group as $attribute) {
-    //         if ($attribute != $key) {
-    //             continue;
-    //         }
-    //         $attributeGroup[] = $attribute;
-    //     }
-
-    //     return $attributeGroup;
-    // }
-
-    /**
-     * Get colors
-     *
-     * @return array
-     **/
-    // public function getColors(): array
-    // {
-    //     return $this->data->colors;
-    // }
-
-    // /**
-    //  * Get colors
-    //  *
-    //  * @return array
-    //  **/
-    // public function getColorName(): string
-    // {
-    //     return $this->data->colors[$this->colorIndex]->color;
-    // }
-
     /**
      * Get product image
      *
@@ -697,104 +610,6 @@ class DmsProduct implements ProductContract
         return $sizes;
     }
 
-    // public function getImage(): ?int
-    // {
-    //     global $wpdb;
-    //     $sku = $this->getSku();
-    //     // firstly check if image -2 exist
-    //     $sql = "SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' AND guid LIKE '%$sku-2%' ORDER BY ID DESC LIMIT 1";
-    //     $attachmentId = $wpdb->get_var($sql);
-        
-    //     if($attachmentId) {
-    //         return $attachmentId;    
-    //     } else {
-    //         // if image -2 doesn't exist, get fallback image
-    //         $sql = "SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' AND guid LIKE '%$sku%' ORDER BY ID DESC LIMIT 1";
-    //         $attachmentId = $wpdb->get_var($sql);
-
-    //         // get woocommerce fallback image if no image was found
-    //         if(!$attachmentId && get_option('woocommerce_placeholder_image')) {
-    //             $attachmentId = get_option('woocommerce_placeholder_image');
-    //         }
-
-    //         return $attachmentId ?? null;
-    //     }
-    // }
-
-    // /**
-    //  * Get product gallery images
-    //  *
-    //  * @return array
-    //  **/
-    // public function getImages(): array
-    // {
-    //     global $wpdb;
-    //     $sku = str_replace('_', '-', $this->getSku());
-    //     $sql = "SELECT ID, guid FROM $wpdb->posts WHERE post_type = 'attachment' AND guid LIKE '%$sku-%' ORDER BY guid ASC";
-    //     $result = $wpdb->get_results($sql);
-
-    //     $gallery = [];
-    //     $duplicates = [];
-
-    //     if(!empty($result)) {
-    //         $numberOfGalleryImages = 5;
-
-    //         foreach ($result as $value) {
-    //             // allow only -1 to -5
-    //             for ($i=1; $i <= $numberOfGalleryImages; $i++) {
-    //                 if (FALSE !== strpos($value->guid, strtolower($sku) . '-' . $i . '.jpg')) {
-    //                     $duplicates[$value->ID] = strtolower($sku) . '-' . $i . '.jpg';
-    //                     continue;
-    //                 }
-    //             }
-    //         }
-
-    //         // order array by key DESC to get the newest images
-    //         krsort($duplicates);
-
-    //         // remove duplicates
-    //         $duplicates = array_unique($duplicates);
-
-    //         // sort by values ASC (name)
-    //         asort($duplicates);
-
-    //         foreach ($duplicates as $key => $d) {
-    //             $gallery[] = $key;
-    //         }
-
-    //         // swap position from -1 and -2 if at least 2 element exists
-    //         if(count($gallery) > 1) {
-    //             $temporary = $gallery[0];
-    //             $gallery[0] = $gallery[1];
-    //             $gallery[1] = $temporary;
-    //         }
-    //     }
-        
-    //     return $gallery ?? null;
-    // }
-        
-    /**
-     * Get sizes
-     *
-     * @return array
-     **/
-    // public function getSizes(): array
-    // {
-    //     $sizes = [];
-    //     if (!isset($this->data->colors[$this->colorIndex])) {
-    //         return $sizes;
-    //     }
-
-    //     foreach ($this->data->colors[$this->colorIndex]->sizes as $size) {
-    //         if (!isset($size->size)) {
-    //             continue;
-    //         }
-    //         $sizes[$size->id] = $size->size;
-    //     }
-
-    //     return \array_unique($sizes);
-    // }
-
     /**
      * Get sku
      *
@@ -806,7 +621,7 @@ class DmsProduct implements ProductContract
     }
 
     /**
-     * Get order status
+     * Get product status
      *
      * @return string
      **/
@@ -816,13 +631,27 @@ class DmsProduct implements ProductContract
     }
 
     /**
-     * Get sizes
+     * Get product type
      *
-     * @return array
+     * @return string
      **/
-    public function getSizeDetails(): array
+    public function getProductType(): string
     {
-        return $this->data->colors[$this->colorIndex]->sizes ?? [];
+        return $this->data->type ?? '';
+    }
+
+    /**
+     * Get product variants
+     *
+     * @return string
+     **/
+    public function getVariants(): array
+    {
+        if(!isset($this->data->variants)) {
+            return [];
+        }
+
+        return (array) $this->data->variants ?? [];
     }
 
     /**

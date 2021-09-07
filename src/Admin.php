@@ -173,11 +173,13 @@ class Admin
             // delete transients if language have changed
             if (\getDmsSelectedLanguage() != sanitize_text_field($_POST['rest-products-language'])) {
                 delete_transient('logisoft-products-collection');
+                delete_transients_with_prefix('logisoft-product-');
             }
 
             // delete transients if brand filter have changed
             if (\getDmsSelectedBrand() != sanitize_text_field($_POST['rest-products-brand'])) {
                 delete_transient('logisoft-products-collection');
+                delete_transients_with_prefix('logisoft-product-');
             }
 
             $options = [
@@ -425,7 +427,18 @@ class Admin
                                 <input checked type="checkbox" class="product-input" name="product" id="product-<?= $product->getId() ?>" value="<?= $product->getId() ?>" checked />
                                 <label class="product-label" for="product-<?= $product->getId() ?>">
                                     <?= $product->getName() ?> <?= $product->getFormat(); ?><br>
-                                    <small class="product-sku"><?= $product->getSku() ?> (<?= $product->getStatus() ?>)</small><br>
+                                    <?php
+                                    $type = $product->getProductType();
+                                    echo $type;
+                                    ?>
+                                    <br><small class="product-sku"><?= $product->getSku() ?><!-- (<?= $product->getStatus() ?>) --></small>
+                                    <?php
+                                    if ($type == 'variant') {
+                                        foreach ($product->getVariants() as $p) { 
+                                            echo '<br><small class="product-sku">' . $p->order_number . '</small>';
+                                        }
+                                    }
+                                    ?>
                                 </label>
                             </div>
                         <?php
