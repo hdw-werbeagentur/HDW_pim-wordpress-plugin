@@ -68,11 +68,16 @@ class DmsApi implements ErpApiContract
             'GET',
             getDmsProductsEndpoint($language), 
             [
+                'http_errors'   => false,
                 'headers' => $headers
             ]
         );
 
-        if (200 != $res->getStatusCode()) {
+        if ($res->getStatusCode() == 401) {
+            echo '<span style="color: #F00;">' . __('Authorization missing. Please use a valid API Token', 'hdw-dms-importer') . '</span>';
+        }
+
+        if ($res->getStatusCode() != 200) {
             return $collection;
         }
 
@@ -81,12 +86,37 @@ class DmsApi implements ErpApiContract
         ############# brand filter start ##################
         $brand = \getDmsSelectedBrand();
 
-        if($brand) {
-            if($brand != 'select') {
+        if ($brand) {
+            if ($brand != 'select') {
                 if ($collection) {
                     foreach ($collection as $key => $product) {
+                        // check if attributes are set
+                        if (!isset($product->attributes)) {
+                            unset($collection[$key]);
+                            continue; 
+                        }
+
+                        // check if brand is set
+                        if (!isset($product->attributes->brand)) {
+                            unset($collection[$key]);
+                            continue;
+                        }
+
+                        // check if brand value is set
+                        if (!isset($product->attributes->brand->value)) {
+                            unset($collection[$key]);
+                            continue;
+                        }
+
+                        $brandValue = json_decode($product->attributes->brand->value);
+
+                        if (!(is_array($brandValue->t))) {
+                            unset($collection[$key]);
+                            continue;   
+                        }
+ 
                         // remove products that are not matching with the brand
-                        if($product->attributes->brand->value != $brand) {
+                        if ($brandValue->t[0] != $brand) { 
                             unset($collection[$key]);
                         }
                     }
@@ -118,11 +148,16 @@ class DmsApi implements ErpApiContract
             'GET',
             getDmsProductEndpoint($id, $language),
             [
+                'http_errors'   => false,
                 'headers' => $headers
             ]
         );
 
-        if (200 != $res->getStatusCode()) {
+        if ($res->getStatusCode() == 401) {
+            echo '<span style="color: #F00;">' . __('Authorization missing. Please use a valid API Token', 'hdw-dms-importer') . '</span>';
+        }
+
+        if ($res->getStatusCode() != 200) {
             return null;
         }
 
@@ -140,18 +175,23 @@ class DmsApi implements ErpApiContract
         $collection = [];
         $headers = [
             'Authorization' => 'Bearer ' . getDMSApiToken(),
-            'Accept'        => 'application/json',
+            'Accept'        => 'application/json'
         ];
 
         $res = $client->request(
             'GET',
             getDmsLanguagesEndpoint(),
             [
-                'headers' => $headers
+                'http_errors'   => false,
+                'headers'       => $headers
             ]
         );
 
-        if (200 != $res->getStatusCode()) {
+        if ($res->getStatusCode() == 401) {
+            echo '<span style="color: #F00;">' . __('Authorization missing. Please use a valid API Token', 'hdw-dms-importer') . '</span>';
+        }
+
+        if ($res->getStatusCode() != 200) {
             return $collection;
         }
 
@@ -178,11 +218,16 @@ class DmsApi implements ErpApiContract
             'GET',
             getDmsImagesEndpoint(),
             [
+                'http_errors'   => false,
                 'headers' => $headers
             ]
         );
 
-        if (200 != $res->getStatusCode()) {
+        if ($res->getStatusCode() == 401) {
+            echo '<span style="color: #F00;">' .__('Authorization missing. Please use a valid API Token', 'hdw-dms-importer') . '</span>';
+        }
+
+        if ($res->getStatusCode() != 200) {
             return $collection;
         }
 

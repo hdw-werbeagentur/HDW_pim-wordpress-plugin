@@ -54,7 +54,7 @@ class DmsProduct implements ProductContract
      **/
     public function getBrand(): string
     {
-        return $this->data->attributes->brand->value ?? '';
+        return $this->getSelectValues('brand');
     }
 
     /**
@@ -75,6 +75,10 @@ class DmsProduct implements ProductContract
      **/
     public function getFormat(): string
     {
+        if (!isset($this->data->attributes->format)) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->format->value);
         return $value->t ?? '';
     }
@@ -91,14 +95,23 @@ class DmsProduct implements ProductContract
     }
 
     /**
+     * Get industries
+     *
+     * @return array Product industries
+     **/
+    public function getIndustries(): array
+    {
+        return $this->getSelectValues('industries', 'multiselect');
+    }
+
+    /**
      * Get packaging type
      *
      * @return string Product packaging type
      **/
     public function getPackagingType(): string
-    { 
-        $value = json_decode($this->data->attributes->{'packaging-type'}->value);
-        return $value->t ?? '';
+    {
+        return $this->getSelectValues('packaging-type');
     }
 
     /**
@@ -117,10 +130,9 @@ class DmsProduct implements ProductContract
      *
      * @return string Product properties usp
      **/
-    public function getIconsUsp(): string
-    { 
-        $value = json_decode($this->data->attributes->{'product-icons-usp'}->value);
-        return $value->t ?? '';
+    public function getIconsUsp(): array
+    {
+        return $this->getSelectValues('product-icons-usp', 'multiselect');
     }
 
     /**
@@ -194,10 +206,9 @@ class DmsProduct implements ProductContract
      *
      * @return string Product application pictograms picture
      **/
-    public function getApplicationPictogramsPicture(): string
-    { 
-        $value = json_decode($this->data->attributes->{'application-pictograms-picture'}->value);
-        return $value->t ?? '';
+    public function getApplicationPictogramsPicture(): array
+    {
+        return $this->getSelectValues('application-pictograms-picture', 'multiselect');
     }
 
     /**
@@ -216,10 +227,9 @@ class DmsProduct implements ProductContract
      *
      * @return string Product application category
      **/
-    public function getApplicationCategory(): string
-    { 
-        $value = json_decode($this->data->attributes->{'application-category'}->value);
-        return $value->t ?? '';
+    public function getApplicationCategory(): array
+    {
+        return $this->getSelectValues('application-category', 'multiselect');
     }
 
     /**
@@ -249,10 +259,9 @@ class DmsProduct implements ProductContract
      *
      * @return string Product application purposes
      **/
-    public function getApplicationPurposes(): string
-    { 
-        $value = json_decode($this->data->attributes->{'application-purposes'}->value);
-        return $value->t ?? '';
+    public function getApplicationPurposes(): array
+    {
+        return $this->getSelectValues('application-purposes', 'multiselect');
     }
 
     /**
@@ -272,9 +281,8 @@ class DmsProduct implements ProductContract
      * @return string Product composition
      **/
     public function getProductComposition(): string
-    { 
-        $value = json_decode($this->data->attributes->{'product-composition'}->value);
-        return $value->t ?? '';
+    {
+        return $this->getSelectValues('product-composition');
     }
 
     /**
@@ -282,10 +290,9 @@ class DmsProduct implements ProductContract
      *
      * @return string Product surface material
      **/
-    public function getSurfaceMaterial(): string
-    { 
-        $value = json_decode($this->data->attributes->{'surface-material'}->value);
-        return $value->t ?? '';
+    public function getSurfaceMaterial(): array
+    {
+        return $this->getSelectValues('surface-material', 'multiselect');
     }
 
     /**
@@ -294,9 +301,8 @@ class DmsProduct implements ProductContract
      * @return string Product ph value
      **/
     public function getPhValue(): string
-    { 
-        $value = json_decode($this->data->attributes->{'ph-value'}->value);
-        return $value->t ?? '';
+    {
+        return $this->getSelectValues('ph-value');
     }
 
     /**
@@ -304,10 +310,9 @@ class DmsProduct implements ProductContract
      *
      * @return string Product colour odour
      **/
-    public function getColourOdour(): string
-    { 
-        $value = json_decode($this->data->attributes->{'colour-odour'}->value);
-        return $value->t ?? '';
+    public function getColourOdour(): array
+    {
+        return $this->getSelectValues('colour-odour', 'multiselect');
     }
 
     /**
@@ -315,9 +320,9 @@ class DmsProduct implements ProductContract
      *
      * @return string Product water hardness
      **/
-    public function getWaterHardness(): string
-    { 
-        return $this->data->attributes->{'water-hardness'}->value ?? '';
+    public function getWaterHardness(): array
+    {
+        return $this->getSelectValues('water-hardness', 'multiselect');
     }
 
     /**
@@ -326,8 +331,8 @@ class DmsProduct implements ProductContract
      * @return string Product dosing systems
      **/
     public function getDosingSystems(): string
-    { 
-        return $this->data->attributes->{'dosing-systems'}->value ?? '';
+    {
+        return $this->getSelectValues('dosing-systems');
     }
 
     /**
@@ -368,10 +373,19 @@ class DmsProduct implements ProductContract
      *
      * @return string Product certificates
      **/
-    public function getProductCertificates(): string
+    public function getProductCertificates(): array
     { 
-        $value = json_decode($this->data->attributes->{'product-certificates'}->value);
-        return $value->t ?? '';
+        return $this->getSelectValues('product-certificates', 'multiselect'); 
+    }
+
+    /**
+     * Get product CLP labelling
+     *
+     * @return string Product CLP labelling
+     **/
+    public function getCLPLabelling(): string
+    { 
+        return $this->getSelectValues('clp-labelling'); 
     }
 
     /**
@@ -668,5 +682,35 @@ class DmsProduct implements ProductContract
     {
         $data = $this->getData();
         return md5(json_encode($data));
+    }
+
+    private function getSelectValues($attribute, $type = null)
+    {
+        // check if icons usp is set
+        if (!isset($this->data->attributes->{$attribute})) {
+            return '';
+        }
+
+        // check if icons usp value is set
+        if (!isset($this->data->attributes->{$attribute}->value)) {
+            return '';
+        }
+
+        $detail = json_decode($this->data->attributes->{$attribute}->value);
+
+        if (!(is_array($detail->t))) {
+            return '';
+        }
+
+        // if array is not empty
+        if ($type == 'multiselect') {
+            return $detail->t;
+        } 
+
+        if (count($detail->t) == 0) {
+            return '';
+        }
+        
+        return $detail->t[0];
     }
 }

@@ -159,8 +159,21 @@ class Import
             \wp_update_post(['ID' => $postId, 'post_content' => $product->getDescription()]);
 
             // set taxonomies
+            \wp_set_object_terms($postId, $product->getIndustries(), 'tax_products_industries');
+            \wp_set_object_terms($postId, $product->getApplicationCategory(), 'tax_products_application_scope');
+            \wp_set_object_terms($postId, $product->getApplicationPurposes(), 'tax_products_application_purpose');
+            \wp_set_object_terms($postId, $product->getProductComposition(), 'tax_products_composition');
+            \wp_set_object_terms($postId, $product->getSurfaceMaterial(), 'tax_products_surface_material');
+            \wp_set_object_terms($postId, $product->getProductCertificates(), 'tax_products_certificates');
+            // \wp_set_object_terms($postId, , 'tax_products_awards');
+            \wp_set_object_terms($postId, $product->getPhValue(), 'tax_products_ph_value');
             \wp_set_object_terms($postId, $product->getFormat(), 'tax_products_package_size');
-
+            \wp_set_object_terms($postId, $product->getColourOdour(), 'tax_products_color_smell');
+            \wp_set_object_terms($postId, $product->getWaterHardness(), 'tax_products_water_hardness');
+            \wp_set_object_terms($postId, $product->getCLPLabelling(), 'tax_products_identification');
+            \wp_set_object_terms($postId, $product->getDosingSystems(), 'tax_products_dosing_systems');
+            // \wp_set_object_terms($postId, , 'tax_products_category');
+ 
             // set meta fields
             \update_post_meta($postId, 'product-order-number', $product->getSku());
             \update_post_meta($postId, 'product-subtitle', $product->getShortDescription());
@@ -202,34 +215,35 @@ class Import
             ################## variants ######################
             $variants = $product->getVariants();
             if (count($variants) > 0) {
+
                 if (isset($variants[0])) {
                     \update_post_meta($postId, 'product-order-number-second', $variants[0]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-second', ($variants[0]->format ?? '') . ' ' . ($variants[0]->packaging_type ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-second', ($variants[0]->format ?? '') . ' ' . ($variants[0]->packaging_type[0] ?? ''));
                 }
 
                 if (isset($variants[1])) {
                     \update_post_meta($postId, 'product-order-number-third', $variants[1]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-third', ($variants[1]->format ?? '') . ' ' . ($variants[1]->packaging_type ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-third', ($variants[1]->format ?? '') . ' ' . ($variants[1]->packaging_type[0] ?? ''));
                 }
 
                 if (isset($variants[2])) {
                     \update_post_meta($postId, 'product-order-number-fourth', $variants[2]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-fourth', ($variants[2]->format ?? '') . ' ' . ($variants[2]->packaging_type ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-fourth', ($variants[2]->format ?? '') . ' ' . ($variants[2]->packaging_type[0] ?? ''));
                 }
 
                 if (isset($variants[3])) {
                     \update_post_meta($postId, 'product-order-number-fifth', $variants[3]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-fifth', ($variants[3]->format ?? '') . ' ' . ($variants[3]->packaging_type ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-fifth', ($variants[3]->format ?? '') . ' ' . ($variants[3]->packaging_type[0] ?? ''));
                 }
                 
                 if (isset($variants[4])) {
                     \update_post_meta($postId, 'product-order-number-sixth', $variants[4]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-sixth', ($variants[4]->format ?? '') . ' ' . ($variants[4]->packaging_type ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-sixth', ($variants[4]->format ?? '') . ' ' . ($variants[4]->packaging_type[0] ?? ''));
                 }
 
                 if (isset($variants[5])) {
                     \update_post_meta($postId, 'product-order-number-seventh', $variants[5]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-seventh', ($variants[50]->format ?? '') . ' ' . ($variants[5]->packaging_type ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-seventh', ($variants[50]->format ?? '') . ' ' . ($variants[5]->packaging_type[0] ?? ''));
                 }
             } 
 
@@ -314,21 +328,5 @@ class Import
                 'post_status' => 'draft'
             ]);
         }
-    }
-
-    public static function findDefaultSize(ProductContract $product): string
-    {
-        $data = $product->getData();
-
-        foreach ($data->colors as $color) {
-            foreach ($color->sizes as $size) {
-                if ($size->qty < 1) {
-                    continue;
-                }
-                return str_replace('½', '5', $size->size);
-            }
-        }
-
-        return '';
     }
 }
