@@ -17,7 +17,8 @@ interface ProductContract
     public function getSku(): string;
     public function getBrand(): string;
     public function getMasterNumber(): string;
-    public function getFormat(): string;
+    public function getFormat();
+    public function getOrderQuantity(): string;
     public function getSalesUnits(): string;
     public function getIndustries(): array;
     public function getPackagingType(): string;

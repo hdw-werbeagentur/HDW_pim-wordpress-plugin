@@ -73,7 +73,42 @@ class DmsProduct implements ProductContract
      *
      * @return string Product format
      **/
-    public function getFormat(): string
+    public function getFormat()
+    {
+        if (!isset($this->data->attributes->format)) {
+            return '';
+        }
+
+        $value = json_decode($this->data->attributes->format->value);
+
+        
+        // check if it is a variant product HDW
+        $variants = []; 
+
+        if ($this->getVariants()) {
+            foreach ($this->getVariants() as $variant) {
+                $variants[] = $variant->format ?? '';
+            }
+
+            if ($value->t) {
+                $variants[] = $value->t;
+            }
+
+            $results = array_unique($variants); // remove duplicastes
+            $results = array_filter($results); // remove empty values
+
+            return $results; 
+        }
+
+        return $value->t ?? '';
+    }
+
+    /**
+     * Get order quantity
+     *
+     * @return string Product order quantity
+     **/
+    public function getOrderQuantity(): string
     {
         if (!isset($this->data->attributes->format)) {
             return '';
