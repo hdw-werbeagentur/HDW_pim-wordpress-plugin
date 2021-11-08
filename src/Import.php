@@ -177,6 +177,8 @@ class Import
             // set meta fields
             \update_post_meta($postId, 'product-order-number', $product->getSku());
             \update_post_meta($postId, 'product-subtitle', $product->getShortDescription());
+
+            \update_post_meta($postId, 'product-advantages-html', $product->getMainFeatures());
             
 
             \update_post_meta($postId, '_thumbnail', $product->getThumbnail());
