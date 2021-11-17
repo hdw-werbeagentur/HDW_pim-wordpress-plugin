@@ -426,7 +426,7 @@ class Admin
                             <div class="<?= implode(' ', $classes) ?>">
                                 <input checked type="checkbox" class="product-input" name="product" id="product-<?= $product->getId() ?>" value="<?= $product->getId() ?>" checked />
                                 <label class="product-label" for="product-<?= $product->getId() ?>">
-                                    <?= $product->getName() ?> <?= $product->getFormat(); ?><br>
+                                    <?= $product->getName() ?> <?= $product->getOrderQuantity(); ?><br>
                                     <?php
                                     $type = $product->getProductType();
                                     echo $type;

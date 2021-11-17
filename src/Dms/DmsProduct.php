@@ -423,20 +423,20 @@ class DmsProduct implements ProductContract
         return $this->getSelectValues('clp-labelling'); 
     }
 
-    /**
-     * Get product Main Features
-     *
-     * @return string Product CLP labelling
-     **/
-    public function getMainFeatures(): string
-    {
-        if (!isset($this->data->attributes->{'main-features'})) {
-            return '';
-        }
+    // /**
+    //  * Get product Main Features
+    //  *
+    //  * @return string Product CLP labelling
+    //  **/
+    // public function getMainFeatures(): string
+    // {
+    //     if (!isset($this->data->attributes->{'main-features'})) {
+    //         return '';
+    //     }
 
-        $value = json_decode($this->data->attributes->{'main-features'}->value);
-        return $value->t ?? '';
-    }
+    //     $value = json_decode($this->data->attributes->{'main-features'}->value);
+    //     return $value->t ?? '';
+    // }
 
     /**
      * Get ID

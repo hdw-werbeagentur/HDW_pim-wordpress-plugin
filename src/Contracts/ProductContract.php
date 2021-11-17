@@ -48,5 +48,5 @@ interface ProductContract
     public function getDisinfectionTable(): string; 
     public function getProductCertificates(): array; 
     public function getCLPLabelling(): string; 
-    public function getMainFeatures(): string; 
+    // public function getMainFeatures(): string; 
 }
