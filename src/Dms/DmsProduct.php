@@ -94,7 +94,7 @@ class DmsProduct implements ProductContract
                 $variants[] = $value->t;
             }
 
-            $results = array_unique($variants); // remove duplicastes
+            $results = array_unique($variants); // remove duplicates
             $results = array_filter($results); // remove empty values
 
             return $results; 
@@ -222,7 +222,34 @@ class DmsProduct implements ProductContract
     public function getSiTi(): string
     { 
         $value = json_decode($this->data->attributes->{'si-ti'}->value);
-        return $value->t ?? '';
+
+        if ($value->t == '') {
+            return '';
+        }
+
+        $aws = \getFileRootPath();
+
+        return $aws . $value->t;
+    }
+
+    /**
+     * Get downloads html
+     *
+     * @return string Product downloads html (Wordpress only)
+     **/
+    public function getDownloadsHtml(): string
+    { 
+        $downloadsHtml = '';
+
+        if ($this->getSiTi() != '') {
+            $downloadsHtml .= '<ul>';
+            $downloadsHtml .= '<li>';
+            $downloadsHtml .= '<a href="' . $this->getSiTi() . '" targer="_blank">' . __('Nachhaltigkeitsinformation') . '</a>';
+            $downloadsHtml .= '</a>';
+            $downloadsHtml .= '</li>';
+        }
+
+        return $downloadsHtml;
     }
 
     /**

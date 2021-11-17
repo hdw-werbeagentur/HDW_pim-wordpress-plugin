@@ -29,6 +29,7 @@ interface ProductContract
     public function getNordicSwanNr(): string;
     public function getSds(): string;
     public function getSiTi(): string;
+    public function getDownloadsHtml(): string;
     public function getOperatingInstructionsDe(): string;
     public function getApplicationPictogramsPicture(): array;
     public function getApplicationPictogramsText(): string;
