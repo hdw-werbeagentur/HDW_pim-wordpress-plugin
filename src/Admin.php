@@ -240,13 +240,13 @@ class Admin
                 <tr>
                     <th><?php _e('Products Endpoint', 'hdw-dms-importer') ?></th>
                     <td>
-                        <?= getDMSRestBase() ?><input type="text" name="rest-products-endpoint" value="<?= esc_attr($options['rest-products-endpoint']) ?>" />
+                        <?= getDMSRestBase() ?><input type="text" name="rest-products-endpoint" value="<?= esc_attr($options['rest-products-endpoint'] ?? '') ?>" />
                     </td>
                 </tr>
                 <tr>
                     <th><?php _e('Product Endpoint', 'hdw-dms-importer') ?></th>
                     <td>
-                        <?= getDMSRestBase() ?><input type="text" name="rest-product-endpoint" value="<?= esc_attr($options['rest-product-endpoint']) ?>" /><br>
+                        <?= getDMSRestBase() ?><input type="text" name="rest-product-endpoint" value="<?= esc_attr($options['rest-product-endpoint'] ?? '') ?>" /><br>
                         <small><?php _e('{id} is replaced with the product id from erp') ?></small><br>
                         <small><?php _e('{language} is replaced with the product language from erp') ?></small>
                     </td>
@@ -254,7 +254,7 @@ class Admin
                 <tr>
                     <th><?php _e('Languages Endpoint', 'hdw-dms-importer') ?></th>
                     <td>
-                        <?= getDMSRestBase() ?><input type="text" name="rest-languages-endpoint" value="<?= esc_attr($options['rest-languages-endpoint']) ?>" /><br>
+                        <?= getDMSRestBase() ?><input type="text" name="rest-languages-endpoint" value="<?= esc_attr($options['rest-languages-endpoint'] ?? '') ?>" /><br>
                     </td>
                 </tr>
                 <tr>
@@ -286,7 +286,7 @@ class Admin
 
                         $contentLanguages = '';
 
-                        if (getDMSRestBase() != '') {
+                        if (getDMSRestBase() != '' && getDMSRestBase() != '/') {
                             $contentLanguages = \getDmsLanguages();
                             $languagesCount = $contentLanguages->getCount(); ?>
                             (<?= $languagesCount . ' ' . __('languages', 'hdw-dms-importer'); ?>)
@@ -315,7 +315,7 @@ class Admin
                         <?php
                         $imageSizes = '';
 
-                        if (getDMSRestBase() != '') {
+                        if (getDMSRestBase() != '' && getDMSRestBase() != '/') {
                             $imageSizes = \getDmsImageSizes();
                         }
 

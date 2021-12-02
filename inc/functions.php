@@ -24,13 +24,13 @@ function getDmsRestPassword(): string
 function getDMSRestBase(): string
 {
     $options = get_option('hdw-dms-importer-settings');
-    return trailingslashit(esc_url_raw($options['rest-base'])) ?? '';
+    return trailingslashit(esc_url_raw($options['rest-base'] ?? ''));
 }
 
 function getDMSApiToken(): string
 {
     $options = get_option('hdw-dms-importer-settings');
-    return trim($options['rest-api-token']) ?? '';
+    return trim($options['rest-api-token']?? '');
 }
 
 function getDmsProductsEndpoint(string $language): string
