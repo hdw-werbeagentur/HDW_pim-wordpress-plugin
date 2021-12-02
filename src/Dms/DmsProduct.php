@@ -241,12 +241,24 @@ class DmsProduct implements ProductContract
     { 
         $downloadsHtml = '';
 
+        if ($this->getSiTi() != '' || $this->getSds() != '') {
+            $downloadsHtml .= '<ul>';    
+        }
+
         if ($this->getSiTi() != '') {
-            $downloadsHtml .= '<ul>';
             $downloadsHtml .= '<li>';
             $downloadsHtml .= '<a href="' . $this->getSiTi() . '" targer="_blank">' . __('Nachhaltigkeitsinformation') . '</a>';
-            $downloadsHtml .= '</a>';
             $downloadsHtml .= '</li>';
+        }
+
+        if ($this->getSds() != '') {
+            $downloadsHtml .= '<li>';
+            $downloadsHtml .= '<a href="' . $this->getSds() . '" targer="_blank">' . __('Sicherheitsdatenblatt') . ' ' . $this->getOrderQuantity() . ' ' . $this->getPackagingType() . '</a>';
+            $downloadsHtml .= '</li>';
+        }
+
+        if ($this->getSiTi() != '' || $this->getSds() != '') {
+            $downloadsHtml .= '</ul>';
         }
 
         return $downloadsHtml;

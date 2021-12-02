@@ -170,34 +170,36 @@ class Admin
     protected function tabSettings(): void
     {
         if (!empty($_POST) && \wp_verify_nonce($_POST['hdw-dms-importer-settings-nonce'], 'save-hdw-dms-importer-settings')) {
+           
             // delete transients if language have changed
-            if (\getDmsSelectedLanguage() != sanitize_text_field($_POST['rest-products-language'])) {
+            if (\getDmsSelectedLanguage() != '' && (\getDmsSelectedLanguage() !== null && (\getDmsSelectedLanguage() != sanitize_text_field($_POST['rest-products-language'])))) {
                 delete_transient('logisoft-products-collection');
                 delete_transients_with_prefix('logisoft-product-');
             }
 
             // delete transients if brand filter have changed
-            if (\getDmsSelectedBrand() != sanitize_text_field($_POST['rest-products-brand'])) {
+            if (\getDmsSelectedBrand() != '' && (\getDmsSelectedBrand() != sanitize_text_field($_POST['rest-products-brand']))) {
                 delete_transient('logisoft-products-collection');
                 delete_transients_with_prefix('logisoft-product-');
             }
 
             $options = [
-                'rest-username' => $_POST['rest-username'],
+                'rest-username' => isset($_POST['rest-username']) ? sanitize_text_field($_POST['rest-username']) : '',
                 'rest-password' => $_POST['rest-password'] && \str_repeat('*', 8) != $_POST['rest-password'] ? $_POST['rest-password'] : getDmsRestPassword(),
-                'rest-base' => trailingslashit(esc_url_raw($_POST['rest-base'])),
-                'rest-api-token' => sanitize_text_field($_POST['rest-api-token']),
-                'rest-products-endpoint' => sanitize_text_field($_POST['rest-products-endpoint']),
-                'rest-product-endpoint' => sanitize_text_field($_POST['rest-product-endpoint']),
-                'rest-products-language' => sanitize_text_field($_POST['rest-products-language']),
-                'rest-file-root-path' => sanitize_text_field($_POST['rest-file-root-path']),
-                'rest-products-brand' => sanitize_text_field($_POST['rest-products-brand']),
-                'rest-languages-endpoint' => sanitize_text_field($_POST['rest-languages-endpoint']),
-                'rest-images-endpoint' => sanitize_text_field($_POST['rest-images-endpoint']),
-                'rest-product-overview-image' => sanitize_text_field($_POST['rest-product-overview-image']),
-                'rest-product-detail-page-image' => sanitize_text_field($_POST['rest-product-detail-page-image'])
+                'rest-base' => isset($_POST['rest-base']) ? trailingslashit(esc_url_raw($_POST['rest-base'])) : '',
+                'rest-api-token' => isset($_POST['rest-api-token']) ? sanitize_text_field($_POST['rest-api-token']) : '',
+                'rest-products-endpoint' => isset($_POST['rest-products-endpoint']) ? sanitize_text_field($_POST['rest-products-endpoint']) : '',
+                'rest-product-endpoint' => isset($_POST['rest-product-endpoint']) ? sanitize_text_field($_POST['rest-product-endpoint']) : '',
+                'rest-products-language' => isset($_POST['rest-products-language']) ? sanitize_text_field($_POST['rest-products-language']) : '',
+                'rest-file-root-path' => isset($_POST['rest-file-root-path']) ? sanitize_text_field($_POST['rest-file-root-path']) : '',
+                'rest-products-brand' => isset($_POST['rest-products-brand']) ? sanitize_text_field($_POST['rest-products-brand']) : '',
+                'rest-languages-endpoint' => isset($_POST['rest-languages-endpoint']) ? sanitize_text_field($_POST['rest-languages-endpoint']) : '',
+                'rest-images-endpoint' => isset($_POST['rest-images-endpoint']) ? sanitize_text_field($_POST['rest-images-endpoint']) : '',
+                'rest-product-overview-image' => isset($_POST['rest-product-overview-image']) ? sanitize_text_field($_POST['rest-product-overview-image']) : '',
+                'rest-product-detail-page-image' => isset($_POST['rest-product-detail-page-image']) ? sanitize_text_field($_POST['rest-product-detail-page-image']) : ''
             ];
-            \update_option('hdw-dms-importer-settings', $options)
+
+            \update_option('hdw-dms-importer-settings', $options);
         ?>
             <div class="notice notice-success is-dismissible">
                 <p><?php _e('Saved.') ?></p>
@@ -282,13 +284,18 @@ class Admin
                 <tr>
                     <th><?= __('Product Language', 'hdw-dms-importer') . '<br>';
 
-                        $contentLanguages = \getDmsLanguages();
-                        $languagesCount = $contentLanguages->getCount(); ?>
-                        (<?= $languagesCount . ' ' . __('languages', 'hdw-dms-importer'); ?>)
+                        $contentLanguages = '';
+
+                        if (getDMSRestBase() != '') {
+                            $contentLanguages = \getDmsLanguages();
+                            $languagesCount = $contentLanguages->getCount(); ?>
+                            (<?= $languagesCount . ' ' . __('languages', 'hdw-dms-importer'); ?>)
+                        <?php
+                        } ?>
                     </th>
                     <td>
                         <?php
-                        if ($contentLanguages) { ?>
+                        if (isset($contentLanguages) && $contentLanguages != '') { ?>
                             <select name="rest-products-language" id="rest-product-language">
                                 <option name='select' <?php if (esc_attr($options['rest-products-language']) == 'select') echo 'selected'; ?>><?= __('Select language', 'hdw-dms-importer') ?></option>
 
@@ -306,9 +313,13 @@ class Admin
                     <th><?= __('Image Product overview page', 'hdw-dms-importer') ?></th>
                     <td>
                         <?php
-                        $imageSizes = \getDmsImageSizes();
+                        $imageSizes = '';
 
-                        if ($imageSizes) { ?>
+                        if (getDMSRestBase() != '') {
+                            $imageSizes = \getDmsImageSizes();
+                        }
+
+                        if ($imageSizes != '') { ?>
                             <select name="rest-product-overview-image" id="rest-product-overview-image">
                                 <option name="select" <?php if (esc_attr($options['rest-product-overview-image'] ?? '') == 'select') echo "selected"; ?>><?= __('Select thumbnail size', 'hdw-dms-importer') ?></option>
 
@@ -327,7 +338,7 @@ class Admin
                     <th><?= __('Image Product detail page', 'hdw-dms-importer') ?></th>
                     <td>
                         <?php
-                        if ($imageSizes) { ?>
+                        if ($imageSizes != '') { ?>
                             <select name="rest-product-detail-page-image" id="rest-product-detail-page-image">
                                 <option name="select" <?php if (esc_attr($options['rest-product-detail-page-image'] ?? '') == 'select') echo "selected"; ?>><?= __('Select thumbnail size', 'hdw-dms-importer') ?></option>
 
@@ -431,10 +442,12 @@ class Admin
                                     $type = $product->getProductType();
                                     echo $type;
                                     ?>
-                                    <br><small class="product-sku"><?= $product->getSku() ?><!-- (<?= $product->getStatus() ?>) --></small>
+                                    <br><small class="product-sku"><?= $product->getSku() ?>
+                                        <!-- (<?= $product->getStatus() ?>) -->
+                                    </small>
                                     <?php
                                     if ($type == 'variant') {
-                                        foreach ($product->getVariants() as $p) { 
+                                        foreach ($product->getVariants() as $p) {
                                             echo '<br><small class="product-sku">' . $p->order_number . '</small>';
                                         }
                                     }

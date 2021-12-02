@@ -17,7 +17,7 @@
         ]
     },
     "require": {
-        "horttcore/wp-plugin": "^1.0",
+        "ralfhortt/wp-plugin": "^1.0",
         "guzzlehttp/guzzle": "^6.3"
     }
 }
