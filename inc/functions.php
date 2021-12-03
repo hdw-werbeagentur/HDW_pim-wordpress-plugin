@@ -201,8 +201,6 @@ function add_aws_image_to_backend_product($postId)
     }
 }
 
-
-
 add_action('archive_product_page_overview_image', 'add_aws_image_to_product_overview_page');
 
 function add_aws_image_to_product_overview_page($postId)
@@ -278,4 +276,18 @@ function get_transient_keys_with_prefix($prefix)
         // Remove '_transient_' from the option name.
         return ltrim($key['gcp_options'], '_transient_');
     }, $keys);
+}
+
+add_action('add_meta_boxes', 'hcf_register_meta_boxes');
+
+function hcf_register_meta_boxes()
+{
+    add_meta_box('dms-1', __('DMS Informations', 'hdw-dms-importer'), 'dms_display_callback', 'cpt_products');
+}
+
+function dms_display_callback()
+{
+    echo '<h2>' . __('Image', 'hdw-dms-importer') . '</h2>';
+
+    add_aws_image_to_backend_product(get_the_ID());
 }
