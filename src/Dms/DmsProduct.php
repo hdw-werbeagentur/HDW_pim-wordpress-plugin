@@ -177,7 +177,7 @@ class DmsProduct implements ProductContract
      **/
     public function getProfile(): string
     { 
-        $value = json_decode($this->data->attributes->{'product-profile'}->value);
+        $value = json_decode($this->data->attributes->{'short-product-profile'}->value);
         return $value->t ?? '';
     }
 
