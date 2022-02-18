@@ -22,10 +22,10 @@
     },
     "extra": {
         "installer-paths": {
-            "wp-content/mu-plugins/{$name}/": [
+            "web/app/mu-plugins/{$name}/": [
                 "type:wordpress-muplugin"
             ],
-            "wp-content/plugins/{$name}/": [
+            "web/app/plugins/{$name}/": [
                 "type:wordpress-plugin"
             ]
         }
