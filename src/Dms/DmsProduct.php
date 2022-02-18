@@ -241,7 +241,7 @@ class DmsProduct implements ProductContract
     { 
         $downloadsHtml = '';
 
-        if ($this->getSiTi() != '' || $this->getSds() != '') {
+        if ($this->getSiTi() != '' || $this->getSds() != '' || $this->getOperatingInstructionsDe() != '') {
             $downloadsHtml .= '<ul>';    
         }
 
@@ -257,7 +257,13 @@ class DmsProduct implements ProductContract
             $downloadsHtml .= '</li>';
         }
 
-        if ($this->getSiTi() != '' || $this->getSds() != '') {
+        if ($this->getOperatingInstructionsDe() != '') {
+            $downloadsHtml .= '<li>';
+            $downloadsHtml .= '<a href="' . $this->getOperatingInstructionsDe() . '" targer="_blank">' . __('Betriebsanweisung') . ' ' . $this->getOrderQuantity() . ' ' . $this->getPackagingType() . '</a>';
+            $downloadsHtml .= '</li>';
+        }
+
+        if ($this->getSiTi() != '' || $this->getSds() != '' || $this->getOperatingInstructionsDe() != '') {
             $downloadsHtml .= '</ul>';
         }
 
@@ -272,7 +278,14 @@ class DmsProduct implements ProductContract
     public function getOperatingInstructionsDe(): string
     { 
         $value = json_decode($this->data->attributes->{'operating-instructions-de'}->value);
-        return $value->t ?? '';
+
+        if ($value->t == '') {
+            return '';
+        }
+
+        $aws = \getFileRootPath();
+
+        return $aws . $value->t;
     }
 
     /**

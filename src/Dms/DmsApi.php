@@ -57,7 +57,8 @@ class DmsApi implements ErpApiContract
      **/
     public function getProducts(string $language): array
     {
-        $client = new \GuzzleHttp\Client();
+        $sslSettings = (pathinfo($_SERVER['SERVER_NAME'], PATHINFO_EXTENSION) == 'test') ? ['verify' => false] : '';
+        $client = new \GuzzleHttp\Client($sslSettings);
         $collection = [];
         $headers = [
             'Authorization' => 'Bearer ' . getDMSApiToken(),
@@ -138,7 +139,8 @@ class DmsApi implements ErpApiContract
      **/
     public function getProduct(string $id, string $language): ?\stdClass
     {
-        $client = new \GuzzleHttp\Client();
+        $sslSettings = (pathinfo($_SERVER['SERVER_NAME'], PATHINFO_EXTENSION) == 'test') ? ['verify' => false] : '';
+        $client = new \GuzzleHttp\Client($sslSettings);
         $headers = [
             'Authorization' => 'Bearer ' . getDMSApiToken(),
             'Accept'        => 'application/json',
@@ -171,7 +173,8 @@ class DmsApi implements ErpApiContract
      **/
     public function getLanguages(): array
     {
-        $client = new \GuzzleHttp\Client();
+        $sslSettings = (pathinfo($_SERVER['SERVER_NAME'], PATHINFO_EXTENSION) == 'test') ? ['verify' => false] : '';
+        $client = new \GuzzleHttp\Client($sslSettings);
         $collection = [];
         $headers = [
             'Authorization' => 'Bearer ' . getDMSApiToken(),
@@ -207,7 +210,8 @@ class DmsApi implements ErpApiContract
      **/
     public function getApiImages(): array
     {
-        $client = new \GuzzleHttp\Client();
+        $sslSettings = (pathinfo($_SERVER['SERVER_NAME'], PATHINFO_EXTENSION) == 'test') ? ['verify' => false] : '';
+        $client = new \GuzzleHttp\Client($sslSettings);
         $collection = [];
         $headers = [
             'Authorization' => 'Bearer ' . getDMSApiToken(),

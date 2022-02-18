@@ -287,7 +287,7 @@ class Admin
                         $contentLanguages = '';
 
                         if (getDMSRestBase() != '' && getDMSRestBase() != '/') {
-                            $contentLanguages = \getDmsLanguages();
+                            $contentLanguages = \getDmsLanguages(); 
                             $languagesCount = $contentLanguages->getCount(); ?>
                             (<?= $languagesCount . ' ' . __('languages', 'hdw-dms-importer'); ?>)
                         <?php
@@ -353,7 +353,7 @@ class Admin
                         ?>
                     </td>
                 </tr>
-            </table>
+            </table> 
             <p>
                 <button class="button button-primary" type="submit"><?php _e('Save') ?></button>
             </p>
