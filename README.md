@@ -6,6 +6,11 @@ A WordPress DMS Importer
 
 
 ## Changelog
+
+## 1.0.2
+#### Release Date - 2022-02-21
+
+* Add product categories
 ## 1.0.1
 #### Release Date - 2022-02-18
 

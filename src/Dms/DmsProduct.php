@@ -757,6 +757,16 @@ class DmsProduct implements ProductContract
     }
 
     /**
+     * Get product category
+     *
+     * @return string Product category
+     **/
+    public function getProductCategory(): array
+    {
+        return $this->getSelectValues('product-category', 'multiselect');
+    }
+
+    /**
      * Get product variants
      *
      * @return string

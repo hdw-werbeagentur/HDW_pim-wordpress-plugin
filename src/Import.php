@@ -161,6 +161,7 @@ class Import
             // set taxonomies
             \wp_set_object_terms($postId, $product->getIndustries(), 'tax_products_industries');
             \wp_set_object_terms($postId, $product->getApplicationCategory(), 'tax_products_application_scope');
+            \wp_set_object_terms($postId, $product->getProductCategory(), 'tax_products_category');
             \wp_set_object_terms($postId, $product->getApplicationPurposes(), 'tax_products_application_purpose');
             \wp_set_object_terms($postId, $product->getProductComposition(), 'tax_products_composition');
             \wp_set_object_terms($postId, $product->getSurfaceMaterial(), 'tax_products_surface_material');
@@ -200,6 +201,7 @@ class Import
             \update_post_meta($postId, '_application-pictograms-picture', $product->getApplicationPictogramsPicture()); 
             \update_post_meta($postId, '_application-pictograms-text', $product->getApplicationPictogramsText()); 
             \update_post_meta($postId, '_application-category', $product->getApplicationCategory()); 
+            \update_post_meta($postId, '_product-category', $product->getProductCategory()); 
             \update_post_meta($postId, '_application-range-si-ti', $product->getApplicationRangeSiTi()); 
             \update_post_meta($postId, '_scope-of-application-picture', $product->getScopeOfApplicationPicture()); 
             \update_post_meta($postId, '_application-purposes', $product->getApplicationPurposes()); 

@@ -19,15 +19,5 @@
     "require": {
         "ralfhortt/wp-plugin": "^1.0",
         "guzzlehttp/guzzle": "^6.3"
-    },
-    "extra": {
-        "installer-paths": {
-            "web/app/mu-plugins/{$name}/": [
-                "type:wordpress-muplugin"
-            ],
-            "web/app/plugins/{$name}/": [
-                "type:wordpress-plugin"
-            ]
-        }
     }
 }

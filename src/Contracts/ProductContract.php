@@ -48,6 +48,7 @@ interface ProductContract
     public function getDosageTable(): string; 
     public function getDisinfectionTable(): string; 
     public function getProductCertificates(): array; 
-    public function getCLPLabelling(): string; 
+    public function getCLPLabelling(): string;
+    public function getProductCategory(): array;
     // public function getMainFeatures(): string; 
 }
