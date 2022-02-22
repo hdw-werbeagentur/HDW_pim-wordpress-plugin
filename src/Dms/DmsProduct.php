@@ -461,8 +461,27 @@ class DmsProduct implements ProductContract
      * @return string Product certificates
      **/
     public function getProductCertificates(): array
-    { 
-        return $this->getSelectValues('product-certificates', 'multiselect'); 
+    {
+        $certificates = $this->getSelectValues('product-certificates', 'multiselect');
+
+        if (is_array($certificates)) {
+            foreach ($certificates as $key => $certificate) {
+                // cradle to cradle (gold, silver, bronze) adjustments
+                if (str_contains($certificate, 'Cradle to Cradle')) {
+                    $details = explode('Cradle to Cradle', $certificate);
+                    $certificates[$key] = trim(str_replace($details[1], '', $certificate)); // replace original value
+                    $certificates[] = trim($details[1]);
+                }
+                // cradle to cradle (gold, silver, bronze) adjustments for russian language
+                if (str_contains($certificate, 'От колыбель к колыбели')) {
+                    $details = explode('От колыбель к колыбели', $certificate);
+                    $certificates[$key] = trim(str_replace($details[1], '', $certificate)); // replace original value
+                    $certificates[] = trim($details[1]);
+                }
+            }
+        }
+
+        return $certificates;
     }
 
     /**

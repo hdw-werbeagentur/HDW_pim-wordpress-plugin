@@ -6,6 +6,11 @@ A WordPress DMS Importer
 
 
 ## Changelog
+## 1.0.4
+#### Release Date - 2022-02-22
+
+* Remove packaging type from product detail page
+* Cradle to Cradle certificate rework
 ## 1.0.3
 #### Release Date - 2022-02-22
 
