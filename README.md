@@ -6,7 +6,10 @@ A WordPress DMS Importer
 
 
 ## Changelog
+## 1.0.3
+#### Release Date - 2022-02-22
 
+* Bugfix: multiselect fields return an empty array in case of empty values
 ## 1.0.2
 #### Release Date - 2022-02-21
 

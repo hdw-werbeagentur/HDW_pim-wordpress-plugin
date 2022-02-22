@@ -798,13 +798,19 @@ class DmsProduct implements ProductContract
 
     private function getSelectValues($attribute, $type = null)
     {
-        // check if icons usp is set
+        // check if variable is set
         if (!isset($this->data->attributes->{$attribute})) {
+            if ($type === 'multiselect') {
+                return [];
+            }
             return '';
         }
 
-        // check if icons usp value is set
+        // check if variable value is set
         if (!isset($this->data->attributes->{$attribute}->value)) {
+            if ($type === 'multiselect') {
+                return [];
+            }
             return '';
         }
 
@@ -815,14 +821,14 @@ class DmsProduct implements ProductContract
         }
 
         // if array is not empty
-        if ($type == 'multiselect') {
+        if ($type === 'multiselect') {
             return $detail->t;
-        } 
+        }
 
         if (count($detail->t) == 0) {
             return '';
         }
-        
+
         return $detail->t[0];
     }
 }
