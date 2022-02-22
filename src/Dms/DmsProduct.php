@@ -253,13 +253,13 @@ class DmsProduct implements ProductContract
 
         if ($this->getSds() != '') {
             $downloadsHtml .= '<li>';
-            $downloadsHtml .= '<a href="' . $this->getSds() . '" targer="_blank">' . __('Sicherheitsdatenblatt') . ' ' . $this->getOrderQuantity() . ' ' . $this->getPackagingType() . '</a>';
+            $downloadsHtml .= '<a href="' . $this->getSds() . '" targer="_blank">' . __('Sicherheitsdatenblatt') . ' ' . $this->getOrderQuantity() . '</a>';
             $downloadsHtml .= '</li>';
         }
 
         if ($this->getOperatingInstructionsDe() != '') {
             $downloadsHtml .= '<li>';
-            $downloadsHtml .= '<a href="' . $this->getOperatingInstructionsDe() . '" targer="_blank">' . __('Betriebsanweisung') . ' ' . $this->getOrderQuantity() . ' ' . $this->getPackagingType() . '</a>';
+            $downloadsHtml .= '<a href="' . $this->getOperatingInstructionsDe() . '" targer="_blank">' . __('Betriebsanweisung') . ' ' . $this->getOrderQuantity() . '</a>';
             $downloadsHtml .= '</li>';
         }
 

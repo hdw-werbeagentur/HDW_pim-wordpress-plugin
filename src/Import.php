@@ -185,7 +185,7 @@ class Import
             \update_post_meta($postId, '_thumbnail', $product->getThumbnail());
             \update_post_meta($postId, '_thumbnails', $product->getThumbnails());
             \update_post_meta($postId, '_sku', $product->getSku());
-            \update_post_meta($postId, 'product-order-amount', $product->getOrderQuantity() . ' ' . $product->getPackagingType());
+            \update_post_meta($postId, 'product-order-amount', $product->getOrderQuantity());
             \update_post_meta($postId, '_brand', $product->getBrand()); 
             \update_post_meta($postId, '_master-number', $product->getMasterNumber()); 
             \update_post_meta($postId, '_sales-units', $product->getSalesUnits()); 
