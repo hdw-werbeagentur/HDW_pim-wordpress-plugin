@@ -238,11 +238,11 @@ class DmsProduct implements ProductContract
      * @return string Product downloads html (Wordpress only)
      **/
     public function getDownloadsHtml(): string
-    { 
+    {
         $downloadsHtml = '';
 
         if ($this->getSiTi() != '' || $this->getSds() != '' || $this->getOperatingInstructionsDe() != '') {
-            $downloadsHtml .= '<ul>';    
+            $downloadsHtml .= '<ul>';
         }
 
         if ($this->getSiTi() != '') {
@@ -261,6 +261,26 @@ class DmsProduct implements ProductContract
             $downloadsHtml .= '<li>';
             $downloadsHtml .= '<a href="' . $this->getOperatingInstructionsDe() . '" targer="_blank">' . __('Betriebsanweisung') . ' ' . $this->getOrderQuantity() . '</a>';
             $downloadsHtml .= '</li>';
+        }
+
+        // check if product have variants
+        $variants = $this->getVariants();
+        if (count($variants) > 0) {
+            foreach ($variants as $variant) {
+                if ($variant->sds != '') {
+                    $downloadsHtml .= '<li>';
+                    $downloadsHtml .= '<a href="' . $variant->sds . '" targer="_blank">' . __('Sicherheitsdatenblatt') . ' ' . $variant->format ?? '' . '</a>';
+                    $downloadsHtml .= '</li>';
+                }
+
+                if ($variant->operating_instructions_de != '') {
+                    $aws = \getFileRootPath();
+
+                    $downloadsHtml .= '<li>';
+                    $downloadsHtml .= '<a href="' . $aws . $variant->operating_instructions_de . '" targer="_blank">' . __('Betriebsanweisung') . ' ' . $variant->format ?? '' . '</a>';
+                    $downloadsHtml .= '</li>';
+                }
+            }
         }
 
         if ($this->getSiTi() != '' || $this->getSds() != '' || $this->getOperatingInstructionsDe() != '') {

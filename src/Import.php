@@ -166,6 +166,7 @@ class Import
             \wp_set_object_terms($postId, $product->getProductComposition(), 'tax_products_composition');
             \wp_set_object_terms($postId, $product->getSurfaceMaterial(), 'tax_products_surface_material');
             \wp_set_object_terms($postId, $product->getProductCertificates(), 'tax_products_certificates');
+            \wp_set_object_terms($postId, $product->getBrand(), 'tax_products_brands');
             // \wp_set_object_terms($postId, , 'tax_products_awards');
             \wp_set_object_terms($postId, $product->getPhValue(), 'tax_products_ph_value');
             \wp_set_object_terms($postId, $product->getFormat(), 'tax_products_package_size');
@@ -222,32 +223,32 @@ class Import
 
                 if (isset($variants[0])) {
                     \update_post_meta($postId, 'product-order-number-second', $variants[0]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-second', ($variants[0]->format ?? '') . ' ' . (json_decode(json_encode($variants[0]->packaging_type))[0] ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-second', ($variants[0]->format ?? ''));
                 } 
 
                 if (isset($variants[1])) {
                     \update_post_meta($postId, 'product-order-number-third', $variants[1]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-third', ($variants[1]->format ?? '') . ' ' . (json_decode(json_encode($variants[1]->packaging_type))[0] ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-third', ($variants[1]->format ?? ''));
                 }
 
                 if (isset($variants[2])) {
                     \update_post_meta($postId, 'product-order-number-fourth', $variants[2]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-fourth', ($variants[2]->format ?? '') . ' ' . (json_decode(json_encode($variants[2]->packaging_type))[0] ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-fourth', ($variants[2]->format ?? ''));
                 }
 
                 if (isset($variants[3])) {
                     \update_post_meta($postId, 'product-order-number-fifth', $variants[3]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-fifth', ($variants[3]->format ?? '') . ' ' . (json_decode(json_encode($variants[3]->packaging_type))[0] ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-fifth', ($variants[3]->format ?? ''));
                 }
                 
                 if (isset($variants[4])) {
                     \update_post_meta($postId, 'product-order-number-sixth', $variants[4]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-sixth', ($variants[4]->format ?? '') . ' ' . (json_decode(json_encode($variants[4]->packaging_type))[0] ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-sixth', ($variants[4]->format ?? ''));
                 }
 
                 if (isset($variants[5])) {
                     \update_post_meta($postId, 'product-order-number-seventh', $variants[5]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-seventh', ($variants[50]->format ?? '') . ' ' . (json_decode(json_encode($variants[5]->packaging_type))[0] ?? ''));
+                    \update_post_meta($postId, 'product-order-amount-seventh', ($variants[50]->format ?? ''));
                 }
             } 
 

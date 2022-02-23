@@ -6,6 +6,12 @@ A WordPress DMS Importer
 
 
 ## Changelog
+## 1.0.5
+#### Release Date - 2022-02-23
+
+* Remove packaging type from product detail page (also for variants)
+* Add sds and operating instructions also for variants
+* Save brand to taxonomy tax_products_brands
 ## 1.0.4
 #### Release Date - 2022-02-22
 
