@@ -253,7 +253,7 @@ class DmsProduct implements ProductContract
 
         if ($this->getSds() != '') {
             $downloadsHtml .= '<li>';
-            $downloadsHtml .= '<a href="' . $this->getSds() . '" targer="_blank">' . __('Safety Date Sheet', 'hdw-dms-importer') . ' ' . $this->getOrderQuantity() . '</a>';
+            $downloadsHtml .= '<a href="' . $this->getSds() . '" targer="_blank">' . __('Safety Data Sheet', 'hdw-dms-importer') . ' ' . $this->getOrderQuantity() . '</a>';
             $downloadsHtml .= '</li>';
         }
 
@@ -269,7 +269,7 @@ class DmsProduct implements ProductContract
             foreach ($variants as $variant) {
                 if ($variant->sds != '') {
                     $downloadsHtml .= '<li>';
-                    $downloadsHtml .= '<a href="' . $variant->sds . '" targer="_blank">' . __('Safety Date Sheet', 'hdw-dms-importer') . ' ' . $variant->format ?? '' . '</a>';
+                    $downloadsHtml .= '<a href="' . $variant->sds . '" targer="_blank">' . __('Safety Data Sheet', 'hdw-dms-importer') . ' ' . $variant->format ?? '' . '</a>';
                     $downloadsHtml .= '</li>';
                 }
 

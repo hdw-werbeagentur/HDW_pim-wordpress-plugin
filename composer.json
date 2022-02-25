@@ -2,7 +2,7 @@
     "name": "hdw/import-dms-plugin-boilerplate",
     "description": "Import [Project] Products from HDW DMS",
     "type": "wp-plugin",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "authors": [
         {
             "name": "Anthony Spross",
