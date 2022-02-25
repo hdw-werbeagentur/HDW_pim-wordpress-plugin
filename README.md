@@ -6,6 +6,10 @@ A WordPress DMS Importer
 
 
 ## Changelog
+## 1.0.7
+#### Release Date - 2022-02-25
+
+* Translate some text-domain values
 ## 1.0.6
 #### Release Date - 2022-02-25
 
