@@ -8,7 +8,7 @@
  * Author URI:      https://www.hdw1.de
  * Text Domain:     hdw-dms-importer
  * Domain Path:     /languages
- * Version:         1.0.8
+ * Version:         1.0.9
  *
  * @package         HDW/[...]
  */

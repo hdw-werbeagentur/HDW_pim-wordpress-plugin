@@ -247,19 +247,19 @@ class DmsProduct implements ProductContract
 
         if ($this->getSiTi() != '') {
             $downloadsHtml .= '<li>';
-            $downloadsHtml .= '<a href="' . $this->getSiTi() . '" targer="_blank">' . __('Sustainability Information', 'hdw-dms-importer') . '</a>';
+            $downloadsHtml .= '<a href="' . $this->getSiTi() . '" target="_blank">' . __('Sustainability Information', 'hdw-dms-importer') . '</a>';
             $downloadsHtml .= '</li>';
         }
 
         if ($this->getSds() != '') {
             $downloadsHtml .= '<li>';
-            $downloadsHtml .= '<a href="' . $this->getSds() . '" targer="_blank">' . __('Safety Data Sheet', 'hdw-dms-importer') . ' ' . $this->getOrderQuantity() . '</a>';
+            $downloadsHtml .= '<a href="' . $this->getSds() . '" target="_blank">' . __('Safety Data Sheet', 'hdw-dms-importer') . ' ' . $this->getOrderQuantity() . '</a>';
             $downloadsHtml .= '</li>';
         }
 
         if ($this->getOperatingInstructionsDe() != '') {
             $downloadsHtml .= '<li>';
-            $downloadsHtml .= '<a href="' . $this->getOperatingInstructionsDe() . '" targer="_blank">' . __('Operating instructions', 'hdw-dms-importer') . ' ' . $this->getOrderQuantity() . '</a>';
+            $downloadsHtml .= '<a href="' . $this->getOperatingInstructionsDe() . '" target="_blank">' . __('Operating instructions', 'hdw-dms-importer') . ' ' . $this->getOrderQuantity() . '</a>';
             $downloadsHtml .= '</li>';
         }
 
@@ -269,7 +269,7 @@ class DmsProduct implements ProductContract
             foreach ($variants as $variant) {
                 if ($variant->sds != '') {
                     $downloadsHtml .= '<li>';
-                    $downloadsHtml .= '<a href="' . $variant->sds . '" targer="_blank">' . __('Safety Data Sheet', 'hdw-dms-importer') . ' ' . $variant->format ?? '' . '</a>';
+                    $downloadsHtml .= '<a href="' . $variant->sds . '" target="_blank">' . __('Safety Data Sheet', 'hdw-dms-importer') . ' ' . ($variant->format ?? '') . '</a>';
                     $downloadsHtml .= '</li>';
                 }
 
@@ -277,7 +277,7 @@ class DmsProduct implements ProductContract
                     $aws = \getFileRootPath();
 
                     $downloadsHtml .= '<li>';
-                    $downloadsHtml .= '<a href="' . $aws . $variant->operating_instructions_de . '" targer="_blank">' . __('Operating instructions', 'hdw-dms-importer') . ' ' . $variant->format ?? '' . '</a>';
+                    $downloadsHtml .= '<a href="' . $aws . $variant->operating_instructions_de . '" target="_blank">' . __('Operating instructions', 'hdw-dms-importer') . ' ' . ($variant->format ?? '') . '</a>';
                     $downloadsHtml .= '</li>';
                 }
             }
