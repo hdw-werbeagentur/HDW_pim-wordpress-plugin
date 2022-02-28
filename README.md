@@ -6,6 +6,11 @@ A WordPress DMS Importer
 
 
 ## Changelog
+## 1.0.10
+#### Release Date - 2022-02-28
+
+* Improve select and multiselect attribute function
+* Reset order number and order quantity before import
 ## 1.0.9
 #### Release Date - 2022-02-25
 
