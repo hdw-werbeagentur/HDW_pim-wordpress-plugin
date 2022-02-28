@@ -216,8 +216,22 @@ class Import
             \update_post_meta($postId, '_ean-code', $product->getEanCode()); 
             \update_post_meta($postId, '_dosage-table', $product->getDosageTable()); 
             \update_post_meta($postId, '_disinfection-table', $product->getDisinfectionTable()); 
-            \update_post_meta($postId, '_product-certificates', $product->getProductCertificates()); 
+            \update_post_meta($postId, '_product-certificates', $product->getProductCertificates());
             ################## variants ######################
+            // reset repeater fields
+            \update_post_meta($postId, 'product-order-number-second', '');
+            \update_post_meta($postId, 'product-order-amount-second', '');
+            \update_post_meta($postId, 'product-order-number-third', '');
+            \update_post_meta($postId, 'product-order-amount-third', '');
+            \update_post_meta($postId, 'product-order-number-fourth', '');
+            \update_post_meta($postId, 'product-order-amount-fourth', '');
+            \update_post_meta($postId, 'product-order-number-fifth', '');
+            \update_post_meta($postId, 'product-order-amount-fifth', '');
+            \update_post_meta($postId, 'product-order-number-sixth', '');
+            \update_post_meta($postId, 'product-order-amount-sixth', '');
+            \update_post_meta($postId, 'product-order-number-seventh', '');
+            \update_post_meta($postId, 'product-order-amount-seventh', ''); 
+
             $variants = $product->getVariants();
             if (count($variants) > 0) {
 
