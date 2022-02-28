@@ -855,19 +855,29 @@ class DmsProduct implements ProductContract
 
         $detail = json_decode($this->data->attributes->{$attribute}->value);
 
-        if (!(is_array($detail->t))) {
+        if (is_null($detail)) {
+            if ($type === 'multiselect') {
+                return [];
+            }
             return '';
         }
 
         // if array is not empty
         if ($type === 'multiselect') {
+            if (count($detail->t) == 0) {
+                return [];
+            }
             return $detail->t;
         }
 
-        if (count($detail->t) == 0) {
+        if (is_null($detail->t)) {
             return '';
         }
 
-        return $detail->t[0];
+        if (is_array($detail->t)) {
+            return $detail->t[0] ?? '';
+        }
+
+        return $detail->t ?? '';
     }
 }
