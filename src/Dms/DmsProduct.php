@@ -228,6 +228,10 @@ class DmsProduct implements ProductContract
         }
 
         $aws = \getFileRootPath();
+        // check if aws path is already in give path
+        if (str_contains($value->t, $aws)) {
+            $aws = '';
+        }
 
         return $aws . $value->t;
     }
@@ -304,6 +308,10 @@ class DmsProduct implements ProductContract
         }
 
         $aws = \getFileRootPath();
+        // check if aws path is already in give path
+        if (str_contains($value->t, $aws)) {
+            $aws = '';
+        }
 
         return $aws . $value->t;
     }

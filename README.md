@@ -6,6 +6,10 @@ A WordPress DMS Importer
 
 
 ## Changelog
+## 1.0.11
+#### Release Date - 2022-03-04
+
+* Bugfix: SiTi & operating instructions aws link issue solved
 ## 1.0.10
 #### Release Date - 2022-02-28
 
