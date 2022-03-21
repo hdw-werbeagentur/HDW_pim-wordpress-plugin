@@ -136,7 +136,7 @@ class Admin
         // get configured size from the dms importer configuration
         $options = \get_option('hdw-dms-importer-settings');
 
-        if ($overviewSize = $options['rest-product-overview-image']) {
+        if ($overviewSize = $options['rest-product-detail-page-image']) {
 
             switch ($overviewSize) {
                 case 'overview':

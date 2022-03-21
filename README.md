@@ -6,6 +6,11 @@ A WordPress DMS Importer
 
 
 ## Changelog
+## 1.0.13
+#### Release Date - 2022-03-21
+
+* Use product detail page image as og:image
+
 ## 1.0.12
 #### Release Date - 2022-03-21
 
