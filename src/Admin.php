@@ -16,6 +16,8 @@ class Admin
     {
         \add_action('admin_menu', [$this, 'addAdminMenu']);
         \add_action('admin_print_styles-tools_page_logisoft-importer', [$this, 'enqueueAssets']);
+        \add_filter('post_thumbnail_html', [$this, 'hdw_overwrite_product_thumbnail_with_url'], 999, 5);
+        \add_action('wp_head', [$this, 'hdw_product_og_image'], 99);
     }
 
     /**
@@ -82,9 +84,121 @@ class Admin
             <a href="tools.php?page=logisoft-importer&tab=importer" class="nav-tab <?php echo $tab == 'importer' ? 'nav-tab-active' : ''; ?>"><?php _e('Importer') ?></a>
             <a href="tools.php?page=logisoft-importer&tab=settings" class="nav-tab <?php echo $tab == 'settings' ? 'nav-tab-active' : ''; ?>"><?php _e('Settings') ?></a>
         </h2>
-    <?php
+        <?php
     }
 
+    /**
+     * replace product thumbnail
+     *
+     * @param  mixed $html
+     * @param  mixed $post_id
+     * @return void
+     */
+    public function hdw_overwrite_product_thumbnail_with_url($html, $post_id)
+    {
+        if ('cpt_products' != get_post_type($post_id)) {
+            return $html;
+        }
+
+        // get configured size from the dms importer configuration
+        $options = \get_option('hdw-dms-importer-settings');
+
+        if ($overviewSize = $options['rest-product-overview-image']) {
+            if ($sizes = get_post_meta($post_id, '_thumbnails', true)) {
+                $html = '<img src="' . $sizes[$overviewSize] . '" alt="' . get_the_title($post_id) . '">';
+            }
+        }
+
+        return $html;
+    }
+
+    /**
+     * create og:email tag for social media purpose
+     *
+     * @param  mixed $html
+     * @param  mixed $post_id
+     * @return void
+     */
+    public function hdw_product_og_image()
+    {
+        if ('cpt_products' != get_post_type()) {
+            return;
+        }
+
+        if ('single-cpt_products' != is_single()) {
+            return;
+        }
+
+        if (has_post_thumbnail()) {
+            return;
+        }
+
+        // get configured size from the dms importer configuration
+        $options = \get_option('hdw-dms-importer-settings');
+
+        if ($overviewSize = $options['rest-product-overview-image']) {
+
+            switch ($overviewSize) {
+                case 'overview':
+                    $imgWidth = 203;
+                    $imgHeight = 250;
+                    break;
+
+                case 'detail':
+                    $imgWidth = 600;
+                    $imgHeight = 740;
+                    break;
+
+                default:
+                    $imgWidth = 162;
+                    $imgHeight = 200;
+                    break;
+            }
+
+            if ($sizes = get_post_meta(get_the_ID(), '_thumbnails', true)) { ?>
+                <meta property="og:image" content="<?= $sizes[$overviewSize]; ?>">
+                <meta property="og:image:width" content="<?= $imgWidth; ?>">
+                <meta property="og:image:height" content="<?= $imgHeight; ?>">
+                <meta property="og:image:type" content="<?= $this->get_image_mime_type($sizes[$overviewSize]); ?>">
+        <?php
+            }
+        }
+    }
+
+    /**
+     * @param $image_path
+     * @return bool|mixed
+     */
+    private function get_image_mime_type($image_path)
+    {
+        $mimes  = array(
+            IMAGETYPE_GIF => "image/gif",
+            IMAGETYPE_JPEG => "image/jpg",
+            IMAGETYPE_PNG => "image/png",
+            IMAGETYPE_SWF => "image/swf",
+            IMAGETYPE_PSD => "image/psd",
+            IMAGETYPE_BMP => "image/bmp",
+            IMAGETYPE_TIFF_II => "image/tiff",
+            IMAGETYPE_TIFF_MM => "image/tiff",
+            IMAGETYPE_JPC => "image/jpc",
+            IMAGETYPE_JP2 => "image/jp2",
+            IMAGETYPE_JPX => "image/jpx",
+            IMAGETYPE_JB2 => "image/jb2",
+            IMAGETYPE_SWC => "image/swc",
+            IMAGETYPE_IFF => "image/iff",
+            IMAGETYPE_WBMP => "image/wbmp",
+            IMAGETYPE_XBM => "image/xbm",
+            IMAGETYPE_ICO => "image/ico"
+        );
+
+        if (($image_type = exif_imagetype($image_path))
+            && (array_key_exists($image_type, $mimes))
+        ) {
+            return $mimes[$image_type];
+        } else {
+            return FALSE;
+        }
+    }
 
     /**
      * Tab: Dashboard
@@ -93,7 +207,7 @@ class Admin
      **/
     protected function tabDashboard(): void
     {
-    ?>
+        ?>
         <h2><?php _e('Dashboard', 'hdw-dms-importer') ?></h2>
         <table class="form-table">
             <tr>
@@ -170,7 +284,7 @@ class Admin
     protected function tabSettings(): void
     {
         if (!empty($_POST) && \wp_verify_nonce($_POST['hdw-dms-importer-settings-nonce'], 'save-hdw-dms-importer-settings')) {
-           
+
             // delete transients if language have changed
             if (\getDmsSelectedLanguage() != '' && (\getDmsSelectedLanguage() !== null && (\getDmsSelectedLanguage() != sanitize_text_field($_POST['rest-products-language'])))) {
                 delete_transient('logisoft-products-collection');
@@ -287,7 +401,7 @@ class Admin
                         $contentLanguages = '';
 
                         if (getDMSRestBase() != '' && getDMSRestBase() != '/') {
-                            $contentLanguages = \getDmsLanguages(); 
+                            $contentLanguages = \getDmsLanguages();
                             $languagesCount = $contentLanguages->getCount(); ?>
                             (<?= $languagesCount . ' ' . __('languages', 'hdw-dms-importer'); ?>)
                         <?php
@@ -353,7 +467,7 @@ class Admin
                         ?>
                     </td>
                 </tr>
-            </table> 
+            </table>
             <p>
                 <button class="button button-primary" type="submit"><?php _e('Save') ?></button>
             </p>

@@ -6,6 +6,11 @@ A WordPress DMS Importer
 
 
 ## Changelog
+## 1.0.12
+#### Release Date - 2022-03-21
+
+* Overwrite product thumbnail through post thumbnail hook
+* Add og:image meta tags from aws data sources 
 ## 1.0.11
 #### Release Date - 2022-03-04
 
