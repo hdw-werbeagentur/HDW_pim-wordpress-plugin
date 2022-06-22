@@ -6,6 +6,12 @@ A WordPress DMS Importer
 
 
 ## Changelog
+## 1.0.14
+#### Release Date - 2022-06-22
+* Add Sku Filter to show Master or Article number
+* Add multiple notifications
+* Add Reset Transients button on Importer Tab
+* Bugfix: Add several object property checks on getter methods to prevent fatal errors
 ## 1.0.13
 #### Release Date - 2022-03-21
 
@@ -15,7 +21,7 @@ A WordPress DMS Importer
 #### Release Date - 2022-03-21
 
 * Overwrite product thumbnail through post thumbnail hook
-* Add og:image meta tags from aws data sources 
+* Add og:image meta tags from aws data sources
 ## 1.0.11
 #### Release Date - 2022-03-04
 
@@ -40,7 +46,7 @@ A WordPress DMS Importer
 ## 1.0.6
 #### Release Date - 2022-02-25
 
-* Add missing text domain translations 
+* Add missing text domain translations
 ## 1.0.5
 #### Release Date - 2022-02-23
 

@@ -81,14 +81,21 @@ function getDmsSelectedBrand(): string
     return trim($options['rest-products-brand'] ?? '');
 }
 
+function getDmsSelectedSkuType(): string
+{
+    $options = get_option('hdw-dms-importer-settings');
+
+    return trim($options['rest-products-sku'] ?? '');
+}
+
 function getDmsProducts(): DmsProductsCollection
 {
-    if (false === $collection = get_transient('logisoft-products-collection')) {
+    if (false === $collection = get_transient('logisoft_products_collection')) {
         $collection = (new DmsProductsCollection())->load();
-        set_transient('logisoft-products-collection', $collection, MINUTE_IN_SECONDS * 15);
+        set_transient('logisoft_products_collection', $collection, MINUTE_IN_SECONDS * 15);
 
         foreach ($collection->get() as $product) {
-            set_transient('logisoft-product-' . $product->getId(), $product, MINUTE_IN_SECONDS * 15);
+            set_transient('logisoft_product_' . $product->getId(), $product, MINUTE_IN_SECONDS * 15);
         }
     }
 
@@ -97,9 +104,9 @@ function getDmsProducts(): DmsProductsCollection
 
 function getDmsProduct($id, $language): DmsProduct
 {
-    if (false === $product = get_transient('logisoft-product-' . $id . '-' . $language)) {
+    if (false === $product = get_transient('logisoft_product_' . $id . '-' . $language)) {
         $product = (new DmsProduct($id, $language))->load();
-        set_transient('logisoft-product-' . $id . '-' . $language, $product, MINUTE_IN_SECONDS * 15);
+        set_transient('logisoft_product_' . $id . '-' . $language, $product, MINUTE_IN_SECONDS * 15);
     }
 
     return $product;
@@ -265,7 +272,7 @@ function get_transient_keys_with_prefix($prefix)
     global $wpdb;
 
     $prefix = $wpdb->esc_like('_transient_' . $prefix);
-    $sql    = "SELECT 'gcp_options' FROM $wpdb->options WHERE 'gcp_options' LIKE '%s'";
+    $sql    = "SELECT `option_name` FROM $wpdb->options WHERE `option_name` LIKE '%s'";
     $keys   = $wpdb->get_results($wpdb->prepare($sql, $prefix . '%'), ARRAY_A);
 
     if (is_wp_error($keys)) {
@@ -274,7 +281,7 @@ function get_transient_keys_with_prefix($prefix)
 
     return array_map(function ($key) {
         // Remove '_transient_' from the option name.
-        return ltrim($key['gcp_options'], '_transient_');
+        return substr($key['option_name'], strlen('_transient_'));
     }, $keys);
 }
 

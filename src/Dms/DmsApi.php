@@ -50,7 +50,7 @@ class DmsApi implements ErpApiContract
 
     /**
      * Get products
-     * 
+     *
      * @param string $language ERP language slug
      *
      * @return array
@@ -67,7 +67,7 @@ class DmsApi implements ErpApiContract
 
         $res = $client->request(
             'GET',
-            getDmsProductsEndpoint($language), 
+            getDmsProductsEndpoint($language),
             [
                 'http_errors'   => false,
                 'headers' => $headers
@@ -94,7 +94,7 @@ class DmsApi implements ErpApiContract
                         // check if attributes are set
                         if (!isset($product->attributes)) {
                             unset($collection[$key]);
-                            continue; 
+                            continue;
                         }
 
                         // check if brand is set
@@ -111,13 +111,13 @@ class DmsApi implements ErpApiContract
 
                         $brandValue = json_decode($product->attributes->brand->value);
 
-                        if (!(is_array($brandValue->t))) {
-                            unset($collection[$key]);
-                            continue;   
-                        }
- 
                         // remove products that are not matching with the brand
-                        if ($brandValue->t[0] != $brand) { 
+                        if ((is_array($brandValue->t)) && $brandValue->t[0] != $brand) {
+                            unset($collection[$key]);
+                        }
+
+                        // remove products that are not matching with the brand
+                        if ((is_string($brandValue->t)) && $brandValue->t != $brand) {
                             unset($collection[$key]);
                         }
                     }
@@ -211,7 +211,7 @@ class DmsApi implements ErpApiContract
     public function getApiImages(): array
     {
         $sslSettings = (pathinfo($_SERVER['SERVER_NAME'], PATHINFO_EXTENSION) == 'test') ? ['verify' => false] : [];
-        $client = new \GuzzleHttp\Client($sslSettings); 
+        $client = new \GuzzleHttp\Client($sslSettings);
         $collection = [];
         $headers = [
             'Authorization' => 'Bearer ' . getDMSApiToken(),

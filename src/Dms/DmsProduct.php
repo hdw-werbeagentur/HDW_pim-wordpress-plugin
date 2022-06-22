@@ -44,6 +44,11 @@ class DmsProduct implements ProductContract
      **/
     public function getName(): string
     {
+        // check if property exist
+        if (!property_exists($this->data, 'name')) {
+            return '';
+        }
+
         return $this->data->name ?? '';
     }
 
@@ -54,6 +59,11 @@ class DmsProduct implements ProductContract
      **/
     public function getBrand(): string
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'brand')) {
+            return '';
+        }
+
         return $this->getSelectValues('brand');
     }
 
@@ -63,7 +73,12 @@ class DmsProduct implements ProductContract
      * @return string Product master number
      **/
     public function getMasterNumber(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'master-number')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'master-number'}->value);
         return $value->t ?? '';
     }
@@ -75,15 +90,16 @@ class DmsProduct implements ProductContract
      **/
     public function getFormat()
     {
-        if (!isset($this->data->attributes->format)) {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'format')) {
             return '';
         }
 
         $value = json_decode($this->data->attributes->format->value);
 
-        
+
         // check if it is a variant product HDW
-        $variants = []; 
+        $variants = [];
 
         if ($this->getVariants()) {
             foreach ($this->getVariants() as $variant) {
@@ -97,7 +113,7 @@ class DmsProduct implements ProductContract
             $results = array_unique($variants); // remove duplicates
             $results = array_filter($results); // remove empty values
 
-            return $results; 
+            return $results;
         }
 
         return $value->t ?? '';
@@ -110,7 +126,8 @@ class DmsProduct implements ProductContract
      **/
     public function getOrderQuantity(): string
     {
-        if (!isset($this->data->attributes->format)) {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'format')) {
             return '';
         }
 
@@ -125,6 +142,11 @@ class DmsProduct implements ProductContract
      **/
     public function getSalesUnits(): string
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'sales-units')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'sales-units'}->value);
         return $value->t ?? '';
     }
@@ -136,6 +158,11 @@ class DmsProduct implements ProductContract
      **/
     public function getIndustries(): array
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'industries')) {
+            return [];
+        }
+
         return $this->getSelectValues('industries', 'multiselect');
     }
 
@@ -146,6 +173,11 @@ class DmsProduct implements ProductContract
      **/
     public function getPackagingType(): string
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'packaging-type')) {
+            return '';
+        }
+
         return $this->getSelectValues('packaging-type');
     }
 
@@ -155,7 +187,12 @@ class DmsProduct implements ProductContract
      * @return string Product properties usp
      **/
     public function getPropertiesUsp(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'product-properties-usp')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'product-properties-usp'}->value);
         return $value->t ?? '';
     }
@@ -167,6 +204,11 @@ class DmsProduct implements ProductContract
      **/
     public function getIconsUsp(): array
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'product-icons-usp')) {
+            return [];
+        }
+
         return $this->getSelectValues('product-icons-usp', 'multiselect');
     }
 
@@ -176,7 +218,12 @@ class DmsProduct implements ProductContract
      * @return string Product profile
      **/
     public function getProfile(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'short-product-profile')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'short-product-profile'}->value);
         return $value->t ?? '';
     }
@@ -187,7 +234,12 @@ class DmsProduct implements ProductContract
      * @return string Product eco flower nr
      **/
     public function getEcoFlowerNr(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'ecoflowernr')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->ecoflowernr->value);
         return $value->t ?? '';
     }
@@ -199,6 +251,11 @@ class DmsProduct implements ProductContract
      **/
     public function getNordicSwanNr(): string
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'nordicswannr')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->nordicswannr->value);
         return $value->t ?? '';
     }
@@ -209,7 +266,12 @@ class DmsProduct implements ProductContract
      * @return string Product sds
      **/
     public function getSds(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'sds')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->sds->value);
         return $value->t ?? '';
     }
@@ -220,7 +282,12 @@ class DmsProduct implements ProductContract
      * @return string Product si ti
      **/
     public function getSiTi(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'si-ti')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'si-ti'}->value);
 
         if ($value->t == '') {
@@ -300,7 +367,12 @@ class DmsProduct implements ProductContract
      * @return string Product operating instructions de
      **/
     public function getOperatingInstructionsDe(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'operating-instructions-de')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'operating-instructions-de'}->value);
 
         if ($value->t == '') {
@@ -323,6 +395,11 @@ class DmsProduct implements ProductContract
      **/
     public function getApplicationPictogramsPicture(): array
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'application-pictograms-picture')) {
+            return [];
+        }
+
         return $this->getSelectValues('application-pictograms-picture', 'multiselect');
     }
 
@@ -332,7 +409,12 @@ class DmsProduct implements ProductContract
      * @return string Product application pictograms text
      **/
     public function getApplicationPictogramsText(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'application-pictograms-text')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'application-pictograms-text'}->value);
         return $value->t ?? '';
     }
@@ -344,6 +426,11 @@ class DmsProduct implements ProductContract
      **/
     public function getApplicationCategory(): array
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'application-category')) {
+            return [];
+        }
+
         return $this->getSelectValues('application-category', 'multiselect');
     }
 
@@ -353,7 +440,12 @@ class DmsProduct implements ProductContract
      * @return string Product application range si ti
      **/
     public function getApplicationRangeSiTi(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'application-range-si-ti')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'application-range-si-ti'}->value);
         return $value->t ?? '';
     }
@@ -364,7 +456,12 @@ class DmsProduct implements ProductContract
      * @return string Product scope of application picture
      **/
     public function getScopeOfApplicationPicture(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'scope-of-application-picture')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'scope-of-application-picture'}->value);
         return $value->t ?? '';
     }
@@ -376,6 +473,11 @@ class DmsProduct implements ProductContract
      **/
     public function getApplicationPurposes(): array
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'application-purposes')) {
+            return [];
+        }
+
         return $this->getSelectValues('application-purposes', 'multiselect');
     }
 
@@ -385,7 +487,12 @@ class DmsProduct implements ProductContract
      * @return string Product dosage
      **/
     public function getDosage(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'dosage')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->dosage->value);
         return $value->t ?? '';
     }
@@ -397,6 +504,11 @@ class DmsProduct implements ProductContract
      **/
     public function getProductComposition(): string
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'product-composition')) {
+            return '';
+        }
+
         return $this->getSelectValues('product-composition');
     }
 
@@ -407,6 +519,11 @@ class DmsProduct implements ProductContract
      **/
     public function getSurfaceMaterial(): array
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'surface-material')) {
+            return [];
+        }
+
         return $this->getSelectValues('surface-material', 'multiselect');
     }
 
@@ -417,6 +534,11 @@ class DmsProduct implements ProductContract
      **/
     public function getPhValue(): string
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'ph-value')) {
+            return '';
+        }
+
         return $this->getSelectValues('ph-value');
     }
 
@@ -427,6 +549,11 @@ class DmsProduct implements ProductContract
      **/
     public function getColourOdour(): array
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'colour-odour')) {
+            return [];
+        }
+
         return $this->getSelectValues('colour-odour', 'multiselect');
     }
 
@@ -437,6 +564,11 @@ class DmsProduct implements ProductContract
      **/
     public function getWaterHardness(): array
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'water-hardness')) {
+            return [];
+        }
+
         return $this->getSelectValues('water-hardness', 'multiselect');
     }
 
@@ -447,6 +579,11 @@ class DmsProduct implements ProductContract
      **/
     public function getDosingSystems(): string
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'dosing-systems')) {
+            return '';
+        }
+
         return $this->getSelectValues('dosing-systems');
     }
 
@@ -456,7 +593,12 @@ class DmsProduct implements ProductContract
      * @return string Product ean code
      **/
     public function getEanCode(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'ean-code')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'ean-code'}->value);
         return $value->t ?? '';
     }
@@ -467,7 +609,12 @@ class DmsProduct implements ProductContract
      * @return string Product dosage table
      **/
     public function getDosageTable(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'dosage-table')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'dosage-table'}->value);
         return $value->t ?? '';
     }
@@ -478,7 +625,12 @@ class DmsProduct implements ProductContract
      * @return string Product disinfection table
      **/
     public function getDisinfectionTable(): string
-    { 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'disinfection-table')) {
+            return '';
+        }
+
         $value = json_decode($this->data->attributes->{'disinfection-table'}->value);
         return $value->t ?? '';
     }
@@ -490,6 +642,11 @@ class DmsProduct implements ProductContract
      **/
     public function getProductCertificates(): array
     {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'product-certificates')) {
+            return [];
+        }
+
         $certificates = $this->getSelectValues('product-certificates', 'multiselect');
 
         if (is_array($certificates)) {
@@ -518,8 +675,13 @@ class DmsProduct implements ProductContract
      * @return string Product CLP labelling
      **/
     public function getCLPLabelling(): string
-    { 
-        return $this->getSelectValues('clp-labelling'); 
+    {
+        // check if property exist
+        if (!property_exists($this->data->attributes, 'clp-labelling')) {
+            return '';
+        }
+
+        return $this->getSelectValues('clp-labelling');
     }
 
     // /**
@@ -544,6 +706,11 @@ class DmsProduct implements ProductContract
      **/
     public function getId(): string
     {
+        // check if property exist
+        if (!property_exists($this->data, 'id')) {
+            return '';
+        }
+
         return $this->data->id ?? '';
     }
 
@@ -674,6 +841,11 @@ class DmsProduct implements ProductContract
      **/
     public function getDescription(): string
     {
+        // check if property exist
+        if (!property_exists($this->data, 'description')) {
+            return '';
+        }
+
         return $this->data->description ?? '';
     }
 
@@ -684,6 +856,11 @@ class DmsProduct implements ProductContract
      **/
     public function getShortDescription(): string
     {
+        // check if property exist
+        if (!property_exists($this->data, 'short_description')) {
+            return '';
+        }
+
         return $this->data->short_description ?? '';
     }
 
@@ -696,6 +873,11 @@ class DmsProduct implements ProductContract
     {
         $aws = \getFileRootPath();
 
+        // check if property exist
+        if (!property_exists($this->data, 'image')) {
+            return '';
+        }
+
         return $this->data->image ? $aws . $this->data->image : '';
     }
 
@@ -706,6 +888,11 @@ class DmsProduct implements ProductContract
      **/
     public function getThumbnail(): string
     {
+        // check if property exist
+        if (!property_exists($this->data, 'image')) {
+            return '';
+        }
+
         $image = $this->data->image ?? '';
 
         if($image == '') {
@@ -716,7 +903,7 @@ class DmsProduct implements ProductContract
 
         $basename = basename($image);
 
-        $thumbnail =  str_replace($basename, '' , $image) . 'thumbs/' . basename($image); 
+        $thumbnail =  str_replace($basename, '' , $image) . 'thumbs/' . basename($image);
 
         return $aws . $thumbnail;
     }
@@ -728,10 +915,15 @@ class DmsProduct implements ProductContract
      **/
     public function getThumbnails(): array
     {
+        // check if property exist
+        if (!property_exists($this->data, 'image')) {
+            return [];
+        }
+
         $image = $this->data->image ?? '';
 
         if($image == '') {
-            return '';
+            return [];
         }
 
         $aws = \getFileRootPath();
@@ -748,7 +940,7 @@ class DmsProduct implements ProductContract
                 $thumbnail = str_replace($basename, '', $image) . 'thumbs/' . basename($image);
 
                 $subdirectory = '';
-                
+
                 if ($size->getName() != 'thumbnail') {
 
                     if ($size->getWidth() > 0 && $size->getHeight() > 0) {
@@ -780,6 +972,11 @@ class DmsProduct implements ProductContract
      **/
     public function getSku(): string
     {
+        // check if property exist
+        if (!property_exists($this->data, 'order_number')) {
+            return '';
+        }
+
         return $this->data->order_number ?? '';
     }
 
@@ -790,6 +987,11 @@ class DmsProduct implements ProductContract
      **/
     public function getStatus(): string
     {
+        // check if property exist
+        if (!property_exists($this->data, 'status')) {
+            return '';
+        }
+
         return $this->data->status ?? '';
     }
 
@@ -800,6 +1002,11 @@ class DmsProduct implements ProductContract
      **/
     public function getProductType(): string
     {
+        // check if property exist
+        if (!property_exists($this->data, 'type')) {
+            return '';
+        }
+
         return $this->data->type ?? '';
     }
 
@@ -810,6 +1017,11 @@ class DmsProduct implements ProductContract
      **/
     public function getProductCategory(): array
     {
+        // check if property exist
+        if (!property_exists($this->data, 'product-category')) {
+            return [];
+        }
+
         return $this->getSelectValues('product-category', 'multiselect');
     }
 
@@ -820,6 +1032,11 @@ class DmsProduct implements ProductContract
      **/
     public function getVariants(): array
     {
+        // check if property exist
+        if (!property_exists($this->data, 'variants')) {
+            return [];
+        }
+
         if(!isset($this->data->variants)) {
             return [];
         }
@@ -872,6 +1089,10 @@ class DmsProduct implements ProductContract
 
         // if array is not empty
         if ($type === 'multiselect') {
+            if (is_null($detail->t)) {
+                return [];
+            }
+
             if (count($detail->t) == 0) {
                 return [];
             }

@@ -92,9 +92,9 @@ class Import
      **/
     public static function create(ProductContract $product)
     {
-        // TODO 
+        // TODO
         $searchResult = Import::findBySku($product->getSku(), []);
- 
+
         if ($searchResult) {
             // \Anni\Info('Produkt Import', sprintf('Aktualisiere Produkt %s (%s)', $product->getName(), $product->getSku()), [
             //     'id' => $searchResult,
@@ -116,7 +116,7 @@ class Import
             'post_type' => 'cpt_products'
         ]);
 
-        return $importProduct; 
+        return $importProduct;
     }
 
     /**
@@ -133,9 +133,9 @@ class Import
             wp_update_post([
                 'ID' => $skipUpdate,
                 'post_status' => 'publish'
-            ]);   
+            ]);
         }
-        
+
         // if ($skipUpdate && 1 == 2) {
         //     // \Anni\Info('Produkt Import', sprintf('Überspringe Produkt %s (%s)', $product->getName(), $product->getSku()), [
         //     //     'name' => $product->getName(),
@@ -153,6 +153,8 @@ class Import
         $postId = Import::create($product);
 
         $postIds[] = $postId;
+
+        $skuType = \getDmsSelectedSkuType();
 
         if ($postId) {
             // set post
@@ -175,47 +177,52 @@ class Import
             \wp_set_object_terms($postId, $product->getCLPLabelling(), 'tax_products_identification');
             \wp_set_object_terms($postId, $product->getDosingSystems(), 'tax_products_dosing_systems');
             // \wp_set_object_terms($postId, , 'tax_products_category');
- 
+
             // set meta fields
-            \update_post_meta($postId, 'product-order-number', $product->getSku());
+            \update_post_meta($postId, 'product-dms-id', $product->getId());
+            if ($skuType == 'Master number' && $product->getMasterNumber() && $product->getMasterNumber() != '') {
+                \update_post_meta($postId, 'product-order-number', $product->getMasterNumber());
+            } else {
+                \update_post_meta($postId, 'product-order-number', $product->getSku());
+            }
             \update_post_meta($postId, 'product-subtitle', $product->getShortDescription());
             \update_post_meta($postId, 'product-advantages-html', $product->getPropertiesUsp());
             \update_post_meta($postId, 'product-downloads-html', $product->getDownloadsHtml());
-            
+
 
             \update_post_meta($postId, '_thumbnail', $product->getThumbnail());
             \update_post_meta($postId, '_thumbnails', $product->getThumbnails());
             \update_post_meta($postId, '_sku', $product->getSku());
             \update_post_meta($postId, 'product-order-amount', $product->getOrderQuantity());
-            \update_post_meta($postId, '_brand', $product->getBrand()); 
-            \update_post_meta($postId, '_master-number', $product->getMasterNumber()); 
-            \update_post_meta($postId, '_sales-units', $product->getSalesUnits()); 
-            \update_post_meta($postId, '_packaging-type', $product->getPackagingType()); 
-            \update_post_meta($postId, '_properties-usp', $product->getPropertiesUsp()); 
-            \update_post_meta($postId, '_icons-usp', $product->getIconsUsp()); 
-            \update_post_meta($postId, '_profile', $product->getProfile()); 
-            \update_post_meta($postId, '_eco-flower-nr', $product->getEcoFlowerNr()); 
-            \update_post_meta($postId, '_nordic-swan-nr', $product->getNordicSwanNr()); 
-            \update_post_meta($postId, '_sds', $product->getSds()); 
-            \update_post_meta($postId, '_si-ti', $product->getSiTi()); 
-            \update_post_meta($postId, '_operating-instructions-de', $product->getOperatingInstructionsDe()); 
-            \update_post_meta($postId, '_application-pictograms-picture', $product->getApplicationPictogramsPicture()); 
-            \update_post_meta($postId, '_application-pictograms-text', $product->getApplicationPictogramsText()); 
-            \update_post_meta($postId, '_application-category', $product->getApplicationCategory()); 
-            \update_post_meta($postId, '_product-category', $product->getProductCategory()); 
-            \update_post_meta($postId, '_application-range-si-ti', $product->getApplicationRangeSiTi()); 
-            \update_post_meta($postId, '_scope-of-application-picture', $product->getScopeOfApplicationPicture()); 
-            \update_post_meta($postId, '_application-purposes', $product->getApplicationPurposes()); 
-            \update_post_meta($postId, '_dosage', $product->getDosage()); 
-            \update_post_meta($postId, '_product-composition', $product->getProductComposition()); 
-            \update_post_meta($postId, '_surface-material', $product->getSurfaceMaterial()); 
-            \update_post_meta($postId, '_ph-value', $product->getPhValue()); 
-            \update_post_meta($postId, '_colour-odour', $product->getColourOdour()); 
-            \update_post_meta($postId, '_water-hardness', $product->getWaterHardness()); 
-            \update_post_meta($postId, '_dosing-systems', $product->getDosingSystems()); 
-            \update_post_meta($postId, '_ean-code', $product->getEanCode()); 
-            \update_post_meta($postId, '_dosage-table', $product->getDosageTable()); 
-            \update_post_meta($postId, '_disinfection-table', $product->getDisinfectionTable()); 
+            \update_post_meta($postId, '_brand', $product->getBrand());
+            \update_post_meta($postId, '_master-number', $product->getMasterNumber());
+            \update_post_meta($postId, '_sales-units', $product->getSalesUnits());
+            \update_post_meta($postId, '_packaging-type', $product->getPackagingType());
+            \update_post_meta($postId, '_properties-usp', $product->getPropertiesUsp());
+            \update_post_meta($postId, '_icons-usp', $product->getIconsUsp());
+            \update_post_meta($postId, '_profile', $product->getProfile());
+            \update_post_meta($postId, '_eco-flower-nr', $product->getEcoFlowerNr());
+            \update_post_meta($postId, '_nordic-swan-nr', $product->getNordicSwanNr());
+            \update_post_meta($postId, '_sds', $product->getSds());
+            \update_post_meta($postId, '_si-ti', $product->getSiTi());
+            \update_post_meta($postId, '_operating-instructions-de', $product->getOperatingInstructionsDe());
+            \update_post_meta($postId, '_application-pictograms-picture', $product->getApplicationPictogramsPicture());
+            \update_post_meta($postId, '_application-pictograms-text', $product->getApplicationPictogramsText());
+            \update_post_meta($postId, '_application-category', $product->getApplicationCategory());
+            \update_post_meta($postId, '_product-category', $product->getProductCategory());
+            \update_post_meta($postId, '_application-range-si-ti', $product->getApplicationRangeSiTi());
+            \update_post_meta($postId, '_scope-of-application-picture', $product->getScopeOfApplicationPicture());
+            \update_post_meta($postId, '_application-purposes', $product->getApplicationPurposes());
+            \update_post_meta($postId, '_dosage', $product->getDosage());
+            \update_post_meta($postId, '_product-composition', $product->getProductComposition());
+            \update_post_meta($postId, '_surface-material', $product->getSurfaceMaterial());
+            \update_post_meta($postId, '_ph-value', $product->getPhValue());
+            \update_post_meta($postId, '_colour-odour', $product->getColourOdour());
+            \update_post_meta($postId, '_water-hardness', $product->getWaterHardness());
+            \update_post_meta($postId, '_dosing-systems', $product->getDosingSystems());
+            \update_post_meta($postId, '_ean-code', $product->getEanCode());
+            \update_post_meta($postId, '_dosage-table', $product->getDosageTable());
+            \update_post_meta($postId, '_disinfection-table', $product->getDisinfectionTable());
             \update_post_meta($postId, '_product-certificates', $product->getProductCertificates());
             ################## variants ######################
             // reset repeater fields
@@ -230,41 +237,66 @@ class Import
             \update_post_meta($postId, 'product-order-number-sixth', '');
             \update_post_meta($postId, 'product-order-amount-sixth', '');
             \update_post_meta($postId, 'product-order-number-seventh', '');
-            \update_post_meta($postId, 'product-order-amount-seventh', ''); 
+            \update_post_meta($postId, 'product-order-amount-seventh', '');
 
             $variants = $product->getVariants();
             if (count($variants) > 0) {
 
                 if (isset($variants[0])) {
-                    \update_post_meta($postId, 'product-order-number-second', $variants[0]->order_number ?? '');
+                    if ($skuType == 'Master number' && property_exists($variants[0], 'master_number') && $variants[0]->master_number != '') {
+                        \update_post_meta($postId, 'product-order-number-second', $variants[0]->master_number);
+                    } else {
+                        \update_post_meta($postId, 'product-order-number-second', $variants[0]->order_number ?? '');
+                    }
+
                     \update_post_meta($postId, 'product-order-amount-second', ($variants[0]->format ?? ''));
-                } 
+                }
 
                 if (isset($variants[1])) {
-                    \update_post_meta($postId, 'product-order-number-third', $variants[1]->order_number ?? '');
+                    if ($skuType == 'Master number' && property_exists($variants[1], 'master_number') && $variants[1]->master_number != '') {
+                        \update_post_meta($postId, 'product-order-number-third', $variants[1]->master_number);
+                    } else {
+                        \update_post_meta($postId, 'product-order-number-third', $variants[1]->order_number ?? '');
+                    }
                     \update_post_meta($postId, 'product-order-amount-third', ($variants[1]->format ?? ''));
                 }
 
                 if (isset($variants[2])) {
-                    \update_post_meta($postId, 'product-order-number-fourth', $variants[2]->order_number ?? '');
+                    if ($skuType == 'Master number' && property_exists($variants[2], 'master_number') && $variants[2]->master_number != '') {
+                        \update_post_meta($postId, 'product-order-number-fourth', $variants[2]->master_number);
+                    } else {
+                        \update_post_meta($postId, 'product-order-number-fourth', $variants[2]->order_number ?? '');
+                    }
                     \update_post_meta($postId, 'product-order-amount-fourth', ($variants[2]->format ?? ''));
                 }
 
                 if (isset($variants[3])) {
-                    \update_post_meta($postId, 'product-order-number-fifth', $variants[3]->order_number ?? '');
+                    if ($skuType == 'Master number' && property_exists($variants[3], 'master_number') && $variants[3]->master_number != '') {
+                        \update_post_meta($postId, 'product-order-number-fifth', $variants[3]->master_number);
+                    } else {
+                        \update_post_meta($postId, 'product-order-number-fifth', $variants[3]->order_number ?? '');
+                    }
                     \update_post_meta($postId, 'product-order-amount-fifth', ($variants[3]->format ?? ''));
                 }
-                
+
                 if (isset($variants[4])) {
-                    \update_post_meta($postId, 'product-order-number-sixth', $variants[4]->order_number ?? '');
+                    if ($skuType == 'Master number' && property_exists($variants[4], 'master_number') && $variants[4]->master_number != '') {
+                        \update_post_meta($postId, 'product-order-number-sixth', $variants[4]->master_number);
+                    } else {
+                        \update_post_meta($postId, 'product-order-number-sixth', $variants[4]->order_number ?? '');
+                    }
                     \update_post_meta($postId, 'product-order-amount-sixth', ($variants[4]->format ?? ''));
                 }
 
                 if (isset($variants[5])) {
-                    \update_post_meta($postId, 'product-order-number-seventh', $variants[5]->order_number ?? '');
-                    \update_post_meta($postId, 'product-order-amount-seventh', ($variants[50]->format ?? ''));
+                    if ($skuType == 'Master number' && property_exists($variants[5], 'master_number') && $variants[5]->master_number != '') {
+                        \update_post_meta($postId, 'product-order-number-seventh', $variants[5]->master_number);
+                    } else {
+                        \update_post_meta($postId, 'product-order-number-seventh', $variants[5]->order_number ?? '');
+                    }
+                    \update_post_meta($postId, 'product-order-amount-seventh', ($variants[5]->format ?? ''));
                 }
-            } 
+            }
 
             \update_post_meta($postId, '_import-hash', Import::createHash($product));
         }
