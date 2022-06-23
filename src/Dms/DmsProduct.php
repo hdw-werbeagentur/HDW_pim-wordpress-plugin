@@ -878,6 +878,10 @@ class DmsProduct implements ProductContract
             return '';
         }
 
+        if ($this->data->image === '') {
+            return '';
+        }
+
         return $this->data->image ? $aws . $this->data->image : '';
     }
 
