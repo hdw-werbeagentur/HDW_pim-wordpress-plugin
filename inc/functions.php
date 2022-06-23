@@ -30,7 +30,7 @@ function getDMSRestBase(): string
 function getDMSApiToken(): string
 {
     $options = get_option('hdw-dms-importer-settings');
-    return trim($options['rest-api-token']?? '');
+    return trim($options['rest-api-token'] ?? '');
 }
 
 function getDmsProductsEndpoint(string $language): string
@@ -86,6 +86,20 @@ function getDmsSelectedSkuType(): string
     $options = get_option('hdw-dms-importer-settings');
 
     return trim($options['rest-products-sku'] ?? '');
+}
+
+function getFallBackImageOption(): bool
+{
+    $options = get_option('hdw-dms-importer-settings');
+
+    return $options['rest-api-image-show-fallback'] ?? false;
+}
+
+function getFallBackImage(): string
+{
+    $options = get_option('hdw-dms-importer-settings');
+
+    return trim($options['rest-api-image-fallback'] ?? '');
 }
 
 function getDmsProducts(): DmsProductsCollection
@@ -217,9 +231,17 @@ function add_aws_image_to_product_overview_page($postId)
 
     if ($overviewImage = $options['rest-product-overview-image']) {
         if ($sizes = get_post_meta($postId, '_thumbnails', true)) {
-?>
+            ?>
             <img src="<?= $sizes[$overviewImage]; ?>" alt="<?= get_the_title($postId); ?>">
-        <?php
+            <?php
+        } else {
+            // show fallback image, if dms settings are set
+            echo @get_headers($options['rest-api-image-fallback']);
+            if ($options['rest-api-image-show-fallback'] && $options['rest-api-image-fallback']) {
+                ?>
+                <img src="<?= $options['rest-api-image-fallback']; ?>" height="250" alt="<?= get_the_title($postId); ?>">
+                <?php
+            }
         }
     } elseif (get_post_meta($postId, '_thumbnail', true)) { ?>
         <img src="<?= get_post_meta($postId, '_thumbnail', true); ?>" alt="<?= get_the_title($postId); ?>">
@@ -236,9 +258,18 @@ function add_aws_image_to_product_single_page($postId)
 
     if ($overviewImage = $options['rest-product-detail-page-image']) {
         if ($sizes = get_post_meta($postId, '_thumbnails', true)) {
-        ?>
+            ?>
             <img src="<?= $sizes[$overviewImage]; ?>" alt="<?= get_the_title($postId); ?>">
+            <?php
+        } else {
+            // echo 'test';
+            // echo @get_headers($options['rest-api-image-fallback']);
+            // show fallback image, if dms settings are set
+            if ($options['rest-api-image-show-fallback'] && $options['rest-api-image-fallback']) {
+            ?>
+                <img src="<?= $options['rest-api-image-fallback']; ?>" height="740" alt="<?= get_the_title($postId); ?>">
         <?php
+            }
         }
     } elseif (get_post_meta($postId, '_thumbnail', true)) { ?>
         <img src="<?= get_post_meta($postId, '_thumbnail', true); ?>" alt="<?= get_the_title($postId); ?>">

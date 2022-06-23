@@ -291,7 +291,7 @@ class Admin
             </form>
         </div>
 
-    <?php
+        <?php
     }
 
     /**
@@ -332,179 +332,193 @@ class Admin
                 'rest-languages-endpoint' => isset($_POST['rest-languages-endpoint']) ? sanitize_text_field($_POST['rest-languages-endpoint']) : '',
                 'rest-images-endpoint' => isset($_POST['rest-images-endpoint']) ? sanitize_text_field($_POST['rest-images-endpoint']) : '',
                 'rest-product-overview-image' => isset($_POST['rest-product-overview-image']) ? sanitize_text_field($_POST['rest-product-overview-image']) : '',
-                'rest-product-detail-page-image' => isset($_POST['rest-product-detail-page-image']) ? sanitize_text_field($_POST['rest-product-detail-page-image']) : ''
+                'rest-product-detail-page-image' => isset($_POST['rest-product-detail-page-image']) ? sanitize_text_field($_POST['rest-product-detail-page-image']) : '',
+                'rest-api-image-show-fallback' => isset($_POST['rest-api-image-show-fallback']) ? sanitize_text_field($_POST['rest-api-image-show-fallback']) : '',
+                'rest-api-image-fallback' => isset($_POST['rest-api-image-fallback']) ? sanitize_text_field($_POST['rest-api-image-fallback']) : ''
             ];
 
             \update_option('hdw-dms-importer-settings', $options);
-            ?>
-                <div class="notice notice-success is-dismissible">
-                    <p><?php _e('Saved.') ?></p>
-                </div>
-            <?php
+        ?>
+            <div class="notice notice-success is-dismissible">
+                <p><?php _e('Saved.') ?></p>
+            </div>
+        <?php
         }
         $options = \get_option('hdw-dms-importer-settings'); ?>
 
-            <h2><?php _e('REST Settings', 'hdw-dms-importer') ?></h2>
-            <form method="post" action="">
-                <table class="form-table">
-                    <tr>
-                        <th><?php _e('Username') ?></th>
-                        <td>
-                            <input type="text" class="regular-text" name="rest-username" value="<?= getDmsRestUser() ?>" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?php _e('Password') ?></th>
-                        <td>
-                            <input type="password" class="regular-text" name="rest-password" value="<?php if (getDmsRestPassword()) {
-                                                                                                        echo \str_repeat('*', 8);
-                                                                                                    } ?>" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?php _e('REST API Base URL', 'hdw-dms-importer') ?></th>
-                        <td>
-                            <input type="url" class="regular-text" name="rest-base" value="<?= getDMSRestBase() ?>" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?php _e('REST API Token', 'hdw-dms-importer') ?></th>
-                        <td>
-                            <input type="text" class="regular-text" name="rest-api-token" value="<?= getDMSApiToken() ?>" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?php _e('Products Endpoint', 'hdw-dms-importer') ?></th>
-                        <td>
-                            <?= getDMSRestBase() ?><input type="text" name="rest-products-endpoint" value="<?= esc_attr($options['rest-products-endpoint'] ?? '') ?>" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?php _e('Product Endpoint', 'hdw-dms-importer') ?></th>
-                        <td>
-                            <?= getDMSRestBase() ?><input type="text" name="rest-product-endpoint" value="<?= esc_attr($options['rest-product-endpoint'] ?? '') ?>" /><br>
-                            <small><?php _e('{id} is replaced with the product id from erp') ?></small><br>
-                            <small><?php _e('{language} is replaced with the product language from erp') ?></small>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?php _e('Languages Endpoint', 'hdw-dms-importer') ?></th>
-                        <td>
-                            <?= getDMSRestBase() ?><input type="text" name="rest-languages-endpoint" value="<?= esc_attr($options['rest-languages-endpoint'] ?? '') ?>" /><br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?php _e('Images Endpoint', 'hdw-dms-importer') ?></th>
-                        <td>
-                            <?= getDMSRestBase() ?><input type="text" name="rest-images-endpoint" value="<?= esc_attr($options['rest-images-endpoint'] ?? '') ?>" /><br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?php _e('Image Root Path', 'hdw-dms-importer') ?><br>
-                            <?php _e('(AWS Server for an example)', 'hdw-dms-importer') ?>
-                        </th>
-                        <td>
-                            <input type="url" class="regular-text" name="rest-file-root-path" value="<?= getFileRootPath() ?>" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?= __('Brand Filter', 'hdw-dms-importer') ?></th>
-                        <td>
-                            <select name="rest-products-brand" id="rest-products-brand">
-                                <option value='select' <?php if (isset($options['rest-products-brand']) && esc_attr($options['rest-products-brand']) == 'select') echo 'selected'; ?>><?= __('Select Brand', 'hdw-dms-importer') ?></option>
-                                <option value='green care PROFESSIONAL' <?php if (isset($options['rest-products-brand']) && esc_attr($options['rest-products-brand']) == 'green care PROFESSIONAL') echo 'selected'; ?>><?= __('green care PROFESSIONAL', 'hdw-dms-importer') ?></option>
-                                <option value='tana PROFESSIONAL' <?php if (isset($options['rest-products-brand']) && esc_attr($options['rest-products-brand']) == 'tana PROFESSIONAL') echo 'selected'; ?>><?= __('tana PROFESSIONAL', 'hdw-dms-importer') ?></option>
+        <h2><?php _e('REST Settings', 'hdw-dms-importer') ?></h2>
+        <form method="post" action="">
+            <table class="form-table">
+                <tr>
+                    <th><?php _e('Username') ?></th>
+                    <td>
+                        <input type="text" class="regular-text" name="rest-username" value="<?= getDmsRestUser() ?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><?php _e('Password') ?></th>
+                    <td>
+                        <input type="password" class="regular-text" name="rest-password" value="<?php if (getDmsRestPassword()) {
+                                                                                                    echo \str_repeat('*', 8);
+                                                                                                } ?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><?php _e('REST API Base URL', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <input type="url" class="regular-text" name="rest-base" value="<?= getDMSRestBase() ?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><?php _e('REST API Token', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <input type="text" class="regular-text" name="rest-api-token" value="<?= getDMSApiToken() ?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><?php _e('Products Endpoint', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <?= getDMSRestBase() ?><input type="text" name="rest-products-endpoint" value="<?= esc_attr($options['rest-products-endpoint'] ?? '') ?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><?php _e('Product Endpoint', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <?= getDMSRestBase() ?><input type="text" name="rest-product-endpoint" value="<?= esc_attr($options['rest-product-endpoint'] ?? '') ?>" /><br>
+                        <small><?php _e('{id} is replaced with the product id from erp') ?></small><br>
+                        <small><?php _e('{language} is replaced with the product language from erp') ?></small>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?php _e('Languages Endpoint', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <?= getDMSRestBase() ?><input type="text" name="rest-languages-endpoint" value="<?= esc_attr($options['rest-languages-endpoint'] ?? '') ?>" /><br>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?php _e('Images Endpoint', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <?= getDMSRestBase() ?><input type="text" name="rest-images-endpoint" value="<?= esc_attr($options['rest-images-endpoint'] ?? '') ?>" /><br>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?php _e('Image Root Path', 'hdw-dms-importer') ?><br>
+                        <?php _e('(AWS Server for an example)', 'hdw-dms-importer') ?>
+                    </th>
+                    <td>
+                        <input type="url" class="regular-text" name="rest-file-root-path" value="<?= getFileRootPath() ?>" />
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Brand Filter', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <select name="rest-products-brand" id="rest-products-brand">
+                            <option value='select' <?php if (isset($options['rest-products-brand']) && esc_attr($options['rest-products-brand']) == 'select') echo 'selected'; ?>><?= __('Select Brand', 'hdw-dms-importer') ?></option>
+                            <option value='green care PROFESSIONAL' <?php if (isset($options['rest-products-brand']) && esc_attr($options['rest-products-brand']) == 'green care PROFESSIONAL') echo 'selected'; ?>><?= __('green care PROFESSIONAL', 'hdw-dms-importer') ?></option>
+                            <option value='tana PROFESSIONAL' <?php if (isset($options['rest-products-brand']) && esc_attr($options['rest-products-brand']) == 'tana PROFESSIONAL') echo 'selected'; ?>><?= __('tana PROFESSIONAL', 'hdw-dms-importer') ?></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Sku Filter', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <select name="rest-products-sku" id="rest-products-sku">
+                            <option value='Article number' <?php if (isset($options['rest-products-sku']) && esc_attr($options['rest-products-sku']) == 'Article number') echo 'selected'; ?>><?= __('Article number', 'hdw-dms-importer') ?></option>
+                            <option value='Master number' <?php if (isset($options['rest-products-sku']) && esc_attr($options['rest-products-sku']) == 'Master number') echo 'selected'; ?>><?= __('Master number', 'hdw-dms-importer') ?></option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Product Language', 'hdw-dms-importer') . '<br>';
+
+                        $contentLanguages = '';
+
+                        if (getDMSRestBase() != '' && getDMSRestBase() != '/') {
+                            $contentLanguages = \getDmsLanguages();
+                            $languagesCount = $contentLanguages->getCount(); ?>
+                            (<?= $languagesCount . ' ' . __('languages', 'hdw-dms-importer'); ?>)
+                        <?php
+                        } ?>
+                    </th>
+                    <td>
+                        <?php
+                        if (isset($contentLanguages) && $contentLanguages != '') { ?>
+                            <select name="rest-products-language" id="rest-product-language">
+                                <option name='select' <?php if (esc_attr($options['rest-products-language']) == 'select') echo 'selected'; ?>><?= __('Select language', 'hdw-dms-importer') ?></option>
+
+                                <?php foreach ($contentLanguages->get() as $language) { ?>
+                                    <option value="<?= $language->getIso(); ?>" <?php if (esc_attr($options['rest-products-language']) == $language->getIso()) echo 'selected' ?>>
+                                        <?= __($language->getName(), 'hdw-dms-importer'); ?></option>;
+                                <?php } ?>
                             </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?= __('Sku Filter', 'hdw-dms-importer') ?></th>
-                        <td>
-                            <select name="rest-products-sku" id="rest-products-sku">
-                                <option value='Article number' <?php if (isset($options['rest-products-sku']) && esc_attr($options['rest-products-sku']) == 'Article number') echo 'selected'; ?>><?= __('Article number', 'hdw-dms-importer') ?></option>
-                                <option value='Master number' <?php if (isset($options['rest-products-sku']) && esc_attr($options['rest-products-sku']) == 'Master number') echo 'selected'; ?>><?= __('Master number', 'hdw-dms-importer') ?></option>
+                        <?php
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Image Product overview page', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <?php
+                        $imageSizes = '';
+
+                        if (getDMSRestBase() != '' && getDMSRestBase() != '/') {
+                            $imageSizes = \getDmsImageSizes();
+                        }
+
+                        if ($imageSizes != '') { ?>
+                            <select name="rest-product-overview-image" id="rest-product-overview-image">
+                                <option name="select" <?php if (esc_attr($options['rest-product-overview-image'] ?? '') == 'select') echo "selected"; ?>><?= __('Select thumbnail size', 'hdw-dms-importer') ?></option>
+
+                                <?php foreach ($imageSizes->get() as $size) { ?>
+                                    <option value="<?= $size->getName(); ?>" <?php if (esc_attr($options['rest-product-overview-image'] ?? '') == $size->getName()) echo 'selected' ?>>
+                                        <?= ucfirst($size->getName()); ?> (<?= __($size->getSize(), 'hdw-dms-importer'); ?>)
+                                    </option>;
+                                <?php } ?>
                             </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?= __('Product Language', 'hdw-dms-importer') . '<br>';
+                        <?php
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Image Product detail page', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <?php
+                        if ($imageSizes != '') { ?>
+                            <select name="rest-product-detail-page-image" id="rest-product-detail-page-image">
+                                <option name="select" <?php if (esc_attr($options['rest-product-detail-page-image'] ?? '') == 'select') echo "selected"; ?>><?= __('Select thumbnail size', 'hdw-dms-importer') ?></option>
 
-                            $contentLanguages = '';
-
-                            if (getDMSRestBase() != '' && getDMSRestBase() != '/') {
-                                $contentLanguages = \getDmsLanguages();
-                                $languagesCount = $contentLanguages->getCount(); ?>
-                                (<?= $languagesCount . ' ' . __('languages', 'hdw-dms-importer'); ?>)
-                            <?php
-                            } ?>
-                        </th>
-                        <td>
-                            <?php
-                            if (isset($contentLanguages) && $contentLanguages != '') { ?>
-                                <select name="rest-products-language" id="rest-product-language">
-                                    <option name='select' <?php if (esc_attr($options['rest-products-language']) == 'select') echo 'selected'; ?>><?= __('Select language', 'hdw-dms-importer') ?></option>
-
-                                    <?php foreach ($contentLanguages->get() as $language) { ?>
-                                        <option value="<?= $language->getIso(); ?>" <?php if (esc_attr($options['rest-products-language']) == $language->getIso()) echo 'selected' ?>>
-                                            <?= __($language->getName(), 'hdw-dms-importer'); ?></option>;
-                                    <?php } ?>
-                                </select>
-                            <?php
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?= __('Image Product overview page', 'hdw-dms-importer') ?></th>
-                        <td>
-                            <?php
-                            $imageSizes = '';
-
-                            if (getDMSRestBase() != '' && getDMSRestBase() != '/') {
-                                $imageSizes = \getDmsImageSizes();
-                            }
-
-                            if ($imageSizes != '') { ?>
-                                <select name="rest-product-overview-image" id="rest-product-overview-image">
-                                    <option name="select" <?php if (esc_attr($options['rest-product-overview-image'] ?? '') == 'select') echo "selected"; ?>><?= __('Select thumbnail size', 'hdw-dms-importer') ?></option>
-
-                                    <?php foreach ($imageSizes->get() as $size) { ?>
-                                        <option value="<?= $size->getName(); ?>" <?php if (esc_attr($options['rest-product-overview-image'] ?? '') == $size->getName()) echo 'selected' ?>>
-                                            <?= ucfirst($size->getName()); ?> (<?= __($size->getSize(), 'hdw-dms-importer'); ?>)
-                                        </option>;
-                                    <?php } ?>
-                                </select>
-                            <?php
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><?= __('Image Product detail page', 'hdw-dms-importer') ?></th>
-                        <td>
-                            <?php
-                            if ($imageSizes != '') { ?>
-                                <select name="rest-product-detail-page-image" id="rest-product-detail-page-image">
-                                    <option name="select" <?php if (esc_attr($options['rest-product-detail-page-image'] ?? '') == 'select') echo "selected"; ?>><?= __('Select thumbnail size', 'hdw-dms-importer') ?></option>
-
-                                    <?php foreach ($imageSizes->get() as $size) { ?>
-                                        <option value="<?= $size->getName(); ?>" <?php if (esc_attr($options['rest-product-detail-page-image'] ?? '') == $size->getName()) echo 'selected' ?>>
-                                            <?= ucfirst($size->getName()); ?> (<?= __($size->getSize(), 'hdw-dms-importer'); ?>)
-                                        </option>;
-                                    <?php } ?>
-                                </select>
-                            <?php
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                </table>
-                <p>
-                    <button class="button button-primary" type="submit"><?php _e('Save') ?></button>
-                </p>
-                <?php wp_nonce_field('save-hdw-dms-importer-settings', 'hdw-dms-importer-settings-nonce') ?>
-            </form>
-        <?php
+                                <?php foreach ($imageSizes->get() as $size) { ?>
+                                    <option value="<?= $size->getName(); ?>" <?php if (esc_attr($options['rest-product-detail-page-image'] ?? '') == $size->getName()) echo 'selected' ?>>
+                                        <?= ucfirst($size->getName()); ?> (<?= __($size->getSize(), 'hdw-dms-importer'); ?>)
+                                    </option>;
+                                <?php } ?>
+                            </select>
+                        <?php
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Show fallback image', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <input type="checkbox" class="regular-text" name="rest-api-image-show-fallback" value="1" <?php if(getFallBackImageOption()) echo 'checked'; ?> />
+                    </td>
+                </tr>
+                <tr>
+                    <th><?= __('Fallback Image', 'hdw-dms-importer') ?></th>
+                    <td>
+                        <input type="text" class="regular-text" name="rest-api-image-fallback" value="<?= getFallBackImage() ?>" />
+                    </td>
+                </tr>
+            </table>
+            <p>
+                <button class="button button-primary" type="submit"><?php _e('Save') ?></button>
+            </p>
+            <?php wp_nonce_field('save-hdw-dms-importer-settings', 'hdw-dms-importer-settings-nonce') ?>
+        </form>
+    <?php
     }
 
     /**
@@ -519,97 +533,97 @@ class Admin
         // \Anni\Info('Produkt Import', 'Erstelle Vorschau von Logisoft Produkten', [
         //     'count' => $products->getCount(),
         // ]);
-        ?>
-            <div class="import-timer" id="import-timer">00:00</div>
-            <progress id="product-progress" class="product-progress" value="0" max="<?= $products->getCount() ?>">0</progress>
-            <table class="form-table">
-                <tr>
-                    <th><?php _e('Filter', 'hdw-dms-importer-settings-nonce') ?></th>
-                    <td>
-                        <button class="button button-filter" id="select-all"><?php _e('Alle', 'hdw-dms-importer-settings-nonce') ?></button>
-                        <button class="button button-filter" id="out-of-sync-selection"><?php _e('Out-of-Sync', 'hdw-dms-importer-settings-nonce') ?></button>
-                        <button class="button button-filter" id="invert-selection"><?php _e('Invertieren', 'hdw-dms-importer-settings-nonce') ?></button>
-                        <button class="button button-filter" id="reset-selection" type="reset"><?php _e('Reset', 'hdw-dms-importer-settings-nonce') ?></button>
-                    </td>
-                </tr>
-                <tr>
-                    <th><?php _e('Products count', 'hdw-dms-importer-settings-nonce') ?></th>
-                    <td>
-                        <?= $products->getCount() ?>
-                    </td>
-                </tr>
-                <tr>
-                    <th><?php _e('Products', 'hdw-dms-importer-settings-nonce') ?></th>
-                    <td>
-                        <div class="products">
-                            <?php
-                            foreach ($products->get() as $product) {
-                                $classes = ['product'];
+    ?>
+        <div class="import-timer" id="import-timer">00:00</div>
+        <progress id="product-progress" class="product-progress" value="0" max="<?= $products->getCount() ?>">0</progress>
+        <table class="form-table">
+            <tr>
+                <th><?php _e('Filter', 'hdw-dms-importer-settings-nonce') ?></th>
+                <td>
+                    <button class="button button-filter" id="select-all"><?php _e('Alle', 'hdw-dms-importer-settings-nonce') ?></button>
+                    <button class="button button-filter" id="out-of-sync-selection"><?php _e('Out-of-Sync', 'hdw-dms-importer-settings-nonce') ?></button>
+                    <button class="button button-filter" id="invert-selection"><?php _e('Invertieren', 'hdw-dms-importer-settings-nonce') ?></button>
+                    <button class="button button-filter" id="reset-selection" type="reset"><?php _e('Reset', 'hdw-dms-importer-settings-nonce') ?></button>
+                </td>
+            </tr>
+            <tr>
+                <th><?php _e('Products count', 'hdw-dms-importer-settings-nonce') ?></th>
+                <td>
+                    <?= $products->getCount() ?>
+                </td>
+            </tr>
+            <tr>
+                <th><?php _e('Products', 'hdw-dms-importer-settings-nonce') ?></th>
+                <td>
+                    <div class="products">
+                        <?php
+                        foreach ($products->get() as $product) {
+                            $classes = ['product'];
 
-                                $args = [
-                                    'post_status' => 'any'
-                                ];
+                            $args = [
+                                'post_status' => 'any'
+                            ];
 
-                                // $args = [
-                                //     'post_status' => 'publish',
-                                //     'tax_query' => [
-                                //         'taxonomy' => 'product_cat',
-                                //         'terms' => ['shop'],
-                                //         'field' => 'slug',
-                                //     ]
-                                // ];
+                            // $args = [
+                            //     'post_status' => 'publish',
+                            //     'tax_query' => [
+                            //         'taxonomy' => 'product_cat',
+                            //         'terms' => ['shop'],
+                            //         'field' => 'slug',
+                            //     ]
+                            // ];
 
-                                $postProducts = \getProductsBySKU($product->getSku(), $args);
+                            $postProducts = \getProductsBySKU($product->getSku(), $args);
 
-                                if (!empty($postProducts)) {
-                                    $classes[] = 'product--on-site';
-                                } else {
-                                    $args['post_status'] = 'draft';
-                                    $postDraftProduct = \getProductsBySKU($product->getSku(), $args);
-                                    $classes[] = (!empty($postDraftProduct)) ? 'product--is-draft' : '';
+                            if (!empty($postProducts)) {
+                                $classes[] = 'product--on-site';
+                            } else {
+                                $args['post_status'] = 'draft';
+                                $postDraftProduct = \getProductsBySKU($product->getSku(), $args);
+                                $classes[] = (!empty($postDraftProduct)) ? 'product--is-draft' : '';
+                            }
+
+                            $class = 'product--is-out-of-sync';
+                            $hash = $product->getHash();
+
+                            foreach ($postProducts as $postProduct) {
+                                if ($hash == get_post_meta($postProduct->ID, '_import-hash', true)) {
+                                    $class = 'product--is-in-sync';
                                 }
-
-                                $class = 'product--is-out-of-sync';
-                                $hash = $product->getHash();
-
-                                foreach ($postProducts as $postProduct) {
-                                    if ($hash == get_post_meta($postProduct->ID, '_import-hash', true)) {
-                                        $class = 'product--is-in-sync';
-                                    }
-                                }
-                                $classes[] = $class;
-                            ?>
-                                <div class="<?= implode(' ', $classes) ?>">
-                                    <input checked type="checkbox" class="product-input" name="product" id="product-<?= $product->getId() ?>" value="<?= $product->getId() ?>" checked />
-                                    <label class="product-label" for="product-<?= $product->getId() ?>">
-                                        <?= $product->getName() ?> <?= $product->getOrderQuantity(); ?><br>
-                                        <?php
-                                        $type = $product->getProductType();
-                                        echo $type;
-                                        ?>
-                                        <br><small class="product-sku">
-                                            <?= $product->getSku() ?>
-                                            <?= $product->getMasterNumber() ? ' (' . $product->getMasterNumber() . ')' : '' ?>
-                                        </small>
-                                        <?php
-                                        if ($type == 'variant') {
-                                            foreach ($product->getVariants() as $p) {
-                                                echo '<br><small class="product-sku">' . $p->order_number . ($p->master_number ? '(' . $p->master_number  . ')' : '') . '</small>';
-                                            }
+                            }
+                            $classes[] = $class;
+                        ?>
+                            <div class="<?= implode(' ', $classes) ?>">
+                                <input checked type="checkbox" class="product-input" name="product" id="product-<?= $product->getId() ?>" value="<?= $product->getId() ?>" checked />
+                                <label class="product-label" for="product-<?= $product->getId() ?>">
+                                    <?= $product->getName() ?> <?= $product->getOrderQuantity(); ?><br>
+                                    <?php
+                                    $type = $product->getProductType();
+                                    echo $type;
+                                    ?>
+                                    <br><small class="product-sku">
+                                        <?= $product->getSku() ?>
+                                        <?= $product->getMasterNumber() ? ' (' . $product->getMasterNumber() . ')' : '' ?>
+                                    </small>
+                                    <?php
+                                    if ($type == 'variant') {
+                                        foreach ($product->getVariants() as $p) {
+                                            echo '<br><small class="product-sku">' . $p->order_number . ($p->master_number ? '(' . $p->master_number  . ')' : '') . '</small>';
                                         }
-                                        ?>
-                                    </label>
-                                </div>
-                            <?php
-                            } ?>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            <p>
-                <button id="product-import" class="button button-primary" type="submit"><?php _e('Import') ?></button>
-            </p>
-        <?php wp_nonce_field('import-waldlaeufer-logisoft-import', 'import-waldlaeufer-logisoft-import-nonce');
+                                    }
+                                    ?>
+                                </label>
+                            </div>
+                        <?php
+                        } ?>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <p>
+            <button id="product-import" class="button button-primary" type="submit"><?php _e('Import') ?></button>
+        </p>
+    <?php wp_nonce_field('import-waldlaeufer-logisoft-import', 'import-waldlaeufer-logisoft-import-nonce');
     }
 
     /**
@@ -622,10 +636,10 @@ class Admin
         delete_transient('logisoft_products_collection');
         delete_transients_with_prefix('logisoft_product_');
 
-        ?>
-            <div class="notice notice-success is-dismissible">
-                <p><?php _e('Transients were resetted', 'hdw-dms-importer-settings-nonce'); ?></p>
-            </div>
-    <?php
+    ?>
+        <div class="notice notice-success is-dismissible">
+            <p><?php _e('Transients were resetted', 'hdw-dms-importer-settings-nonce'); ?></p>
+        </div>
+<?php
     }
 }
