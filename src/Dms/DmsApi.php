@@ -111,6 +111,12 @@ class DmsApi implements ErpApiContract
 
                         $brandValue = json_decode($product->attributes->brand->value);
 
+                        // check if brand value is an array
+                        if (is_array($brandValue)) {
+                            unset($collection[$key]);
+                            continue;
+                        }
+
                         // remove products that are not matching with the brand
                         if ((is_array($brandValue->t)) && $brandValue->t[0] != $brand) {
                             unset($collection[$key]);

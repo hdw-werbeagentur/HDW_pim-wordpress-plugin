@@ -6,6 +6,11 @@ A WordPress DMS Importer
 
 
 ## Changelog
+## 1.0.15
+#### Release Date - 2022-06-23
+* Add Image fallback configuration
+* Image fallback should be shown on detail and overview page
+* Bugfix: Empty image should now return an empty result instead of aws data
 ## 1.0.14
 #### Release Date - 2022-06-22
 * Add Sku Filter to show Master or Article number
